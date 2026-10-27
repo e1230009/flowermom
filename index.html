@@ -29,13 +29,17 @@
         body { font-family: 'Noto Sans TC', sans-serif; }
     </style>
 </head>
-<body class="flex flex-col min-h-full text-slate-800">
+<body class="flex flex-col min-h-full text-slate-800 relative bg-slate-900">
+
+    <!-- 背景圖片與半透明遮罩 -->
+    <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat filter blur-sm scale-105 opacity-45 pointer-events-none" style="background-image: url('IMG_7847.jpeg');"></div>
+    <div class="fixed inset-0 z-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/70 pointer-events-none"></div>
 
     <!-- Toast 通知 -->
-    <div id="toast" class="fixed top-5 right-5 z-50 hidden bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all"></div>
+    <div id="toast" class="fixed top-5 right-5 z-50 hidden bg-slate-900/90 backdrop-blur-md text-white px-5 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all border border-slate-700"></div>
 
     <!-- Header 頂部欄 -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-shopee-500 flex items-center justify-center text-white font-black text-xl shadow-md">
@@ -52,15 +56,15 @@
         </div>
     </header>
 
-    <main class="max-w-3xl mx-auto px-4 py-10 flex-grow w-full">
+    <main class="max-w-3xl mx-auto px-4 py-10 flex-grow w-full relative z-10">
 
         <!-- 連結轉換器工具區塊 -->
-        <section id="converter" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-md space-y-6">
+        <section id="converter" class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-2xl space-y-6">
             <div class="border-b border-slate-100 pb-5">
                 <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2.5">
                     <i class="fa-solid fa-link text-shopee-500 text-2xl"></i> 社群推廣優惠連結轉換器
                 </h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1.5">貼上蝦皮商品網址，轉換成推廣優惠超連結</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1.5">貼上蝦皮商品網址，轉換成推廣優惠連結</p>
             </div>
 
             <div class="space-y-5">
@@ -72,7 +76,7 @@
                 </div>
 
                 <button onclick="convertLink()" class="w-full py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為分潤超連結
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為推廣優惠連結
                 </button>
 
                 <!-- 轉換結果輸出區 -->
@@ -86,7 +90,7 @@
                     <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
                         <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider"></span>
                         <div class="text-lg font-bold text-amber-400 pt-1">
-                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">商品1 點擊購買</a>
+                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
                         </div>
                     </div>
 
@@ -102,9 +106,34 @@
             </div>
         </section>
 
+        <!-- LINE 社群推廣區塊 -->
+        <section class="mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden border border-emerald-400/30">
+            <!-- 裝飾背景圈圈 -->
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -left-10 -top-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+                <div class="space-y-2">
+                    <div class="inline-flex items-center gap-2 bg-emerald-700/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-emerald-100 border border-emerald-400/30">
+                        <i class="fa-brands fa-line text-lg text-emerald-300"></i> 花媽獨家優惠群
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-black text-white leading-tight">
+                        加入花媽 LINE 群獲得更多優惠資訊！
+                    </h3>
+                    <p class="text-xs sm:text-sm text-emerald-100/90 font-medium">
+                        天天分享隱藏版限時折扣與專屬優惠券，幫你精打細算省更多錢 💰
+                    </p>
+                </div>
+                
+                <a href="https://reurl.cc/oKNzLV" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto shrink-0 px-6 py-4 bg-white hover:bg-emerald-50 text-emerald-700 font-black text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-line text-xl text-[#00B900]"></i> 立即加入社群
+                </a>
+            </div>
+        </section>
+
     </main>
 
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <footer class="bg-white/90 backdrop-blur-md border-t border-slate-200/80 py-6 text-center text-xs text-slate-600 relative z-10">
         <p>© 2026 flowermom - 蝦皮分潤推廣網址工具</p>
     </footer>
 
