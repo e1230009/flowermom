@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>花媽蝦皮優惠 (flowermom) - 蝦皮優惠券與專屬分潤連結轉換器</title>
+    <title>花媽蝦皮優惠 (flowermom) - 蝦皮專屬推廣優惠連結轉換器</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -35,83 +35,68 @@
     <div id="toast" class="fixed top-5 right-5 z-50 hidden bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all"></div>
 
     <!-- Header 頂部欄 -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-shopee-500 flex items-center justify-center text-white font-black text-xl shadow-md">
                     花
                 </div>
                 <div>
-                    <h1 class="font-bold text-slate-900 text-base leading-tight">flowermom 連結轉換器</h1>
-                    <p class="text-xs text-slate-500">推廣九折券與自動分潤轉換</p>
+                    <h1 class="font-bold text-slate-900 text-base leading-tight">flowermom 社群推廣優惠連結轉換器</h1>
+                    <p class="text-xs text-slate-500">加入社群一起省錢</p>
                 </div>
             </div>
-            <a href="#converter" class="px-4 py-2 bg-shopee-500 hover:bg-shopee-600 text-white text-xs font-bold rounded-xl shadow transition">
-                前往轉換器
-            </a>
+            <span class="px-3 py-1 bg-shopee-50 text-shopee-600 text-xs font-bold rounded-full border border-shopee-100">
+                <i class="fa-solid fa-bolt mr-1"></i> 
+            </span>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full space-y-8">
-
-        <!-- 部落格文章卡片區塊 -->
-        <article class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
-            <div class="space-y-2">
-                <span class="inline-block px-3 py-1 bg-shopee-50 text-shopee-600 text-xs font-bold rounded-full">蝦皮專屬優惠</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-slate-900">【推廣九折】蝦皮熱門折價券與商品連結轉檔指南</h2>
-                <p class="text-xs text-slate-400">發布日期：2026-10-27 • 作者：flowermom</p>
-            </div>
-
-            <div class="text-sm text-slate-600 leading-relaxed space-y-4 border-t border-slate-100 pt-4">
-                <p>歡迎來到花媽蝦皮優惠的專屬推薦頁面！底下可以直接輸入任何蝦皮商品的原始連結
-         
-        </article>
+    <main class="max-w-3xl mx-auto px-4 py-10 flex-grow w-full">
 
         <!-- 連結轉換器工具區塊 -->
-        <section id="converter" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
-            <div class="border-b border-slate-100 pb-4">
-                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-link text-shopee-500"></i> 蝦皮分潤網址轉換器
-                </h3>
-                <p class="text-xs text-slate-500 mt-1">貼上商品的網址，自動轉換為「商品1 點擊購買」專屬分潤超連結</p>
+        <section id="converter" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-md space-y-6">
+            <div class="border-b border-slate-100 pb-5">
+                <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+                    <i class="fa-solid fa-link text-shopee-500 text-2xl"></i> 社群推廣優惠連結轉換器
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1.5">貼上蝦皮商品網址，轉換成推廣優惠超連結</p>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">請貼上蝦皮商品網址：</label>
-                    <input type="text" id="input-url" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-shopee-500/20 focus:border-shopee-500 text-sm font-mono">
+                    <label for="input-url" class="block text-sm font-bold text-slate-800 mb-2">
+                        請貼上蝦皮商品網址：
+                    </label>
+                    <textarea id="input-url" rows="3" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-base font-mono transition resize-none placeholder:text-slate-300 shadow-inner"></textarea>
                 </div>
 
-                <button onclick="convertLink()" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-2xl shadow transition">
-                    轉換為分潤超連結
+                <button onclick="convertLink()" class="w-full py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為分潤超連結
                 </button>
 
                 <!-- 轉換結果輸出區 -->
-                <div id="result-box" class="hidden p-5 bg-slate-900 rounded-2xl text-white space-y-4">
-                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-2">
-                        <span>轉換結果（已注入分潤追蹤碼）：</span>
-                        <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> 可正常開啟與記錄分潤</span>
+                <div id="result-box" class="hidden p-6 bg-slate-900 rounded-2xl text-white space-y-5 shadow-xl transition-all">
+                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
+                        <span class="font-bold"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> 轉換成功</span>
+                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono"></span>
                     </div>
 
-                    <!-- 1. 視覺預覽展示區（完全不顯示網址） -->
-                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/80 space-y-2">
-                        <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">超連結效果預覽：</span>
-                        <div class="text-base font-bold text-amber-400">
+                    <!-- 視覺預覽展示區（不顯示長網址，僅顯示封裝文字） -->
+                    <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
+                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider"></span>
+                        <div class="text-lg font-bold text-amber-400 pt-1">
                             👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">商品1 點擊購買</a>
                         </div>
                     </div>
 
-                    <!-- 操作按鈕 -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-                        <button onclick="copyRichText()" class="py-2.5 bg-shopee-500 hover:bg-shopee-600 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow">
-                            <i class="fa-solid fa-paste"></i> 複製帶連結文字 (文章/LINE)
-                        </button>
-                        <button onclick="copyMarkdownText()" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-1.5">
+                    <!-- 操作按鈕區 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                        
+                        <button onclick="copyMarkdownText()" class="py-3 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-code"></i> 複製 Markdown 格式
                         </button>
-                        <button onclick="openResult()" class="py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> 測試點擊開啟
-                        </button>
+                        
                     </div>
                 </div>
             </div>
@@ -135,27 +120,10 @@
             setTimeout(() => toast.classList.add('hidden'), 2500);
         }
 
-        // 折扣碼複製並帶分潤跳轉
-        function copyCodeAndRedirect(code, targetUrl) {
-            const temp = document.createElement('input');
-            temp.value = code;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-
-            showToast(`已複製折扣碼：${code}！正在帶您前往蝦皮...`);
-
-            const affiliateUrl = addAffiliateParams(targetUrl);
-            setTimeout(() => {
-                window.open(affiliateUrl, '_blank');
-            }, 800);
-        }
-
         // 為網址精準寫入 an_16397180008 分潤與追蹤參數
         function addAffiliateParams(originalUrl) {
             try {
-                let formattedUrl = originalUrl;
+                let formattedUrl = originalUrl.trim();
                 if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
                     formattedUrl = 'https://' + formattedUrl;
                 }
@@ -187,7 +155,7 @@
                 return;
             }
 
-            // 生成真實帶分潤參數的可開網址（後台用）
+            // 生成真實帶分潤參數的可開網址
             currentFullAffiliateUrl = addAffiliateParams(input);
 
             // 更新畫面中的預覽連結與文字
@@ -199,7 +167,7 @@
             showToast('轉換成功！已封裝為「' + DEFAULT_TEXT + '」分潤超連結');
         }
 
-        // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件等，可直接點擊）
+        // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件、LINE等，可直接點擊）
         function copyRichText() {
             const tempContainer = document.createElement('div');
             tempContainer.contentEditable = 'true';
