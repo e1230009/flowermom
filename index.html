@@ -112,12 +112,12 @@
                 <div id="result-box" class="hidden p-6 bg-slate-900 rounded-2xl text-white space-y-5 shadow-xl transition-all">
                     <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
                         <span class="font-bold"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> 轉換成功</span>
-                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono">已自動注入 Sub ID 追蹤碼</span>
+                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono"></span>
                     </div>
 
                     <!-- 視覺預覽展示區（顯示「直接點擊購買商品」） -->
                     <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
-                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">預覽效果：</span>
+                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">推廣連結：</span>
                         <div class="text-lg font-bold text-amber-400 pt-1">
                             👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
                         </div>
@@ -231,7 +231,7 @@
             previewLink.href = currentFullAffiliateUrl;
 
             document.getElementById('result-box').classList.remove('hidden');
-            showToast('轉換成功！);
+            showToast('轉換成功！');
         }
 
         // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件、LINE等，可直接點擊）
