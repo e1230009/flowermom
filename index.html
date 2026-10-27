@@ -25,15 +25,16 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; }
     </style>
 </head>
 <body class="flex flex-col min-h-full text-slate-800 relative bg-slate-900">
 
-    <!-- 背景圖片與半透明遮罩 -->
-    <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat filter blur-sm scale-105 opacity-45 pointer-events-none" style="background-image: url('IMG_7847.jpeg');"></div>
-    <div class="fixed inset-0 z-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/70 pointer-events-none"></div>
+    <!-- 背景圖片與半透明遮罩 (優先載入 IMG_7847.jpeg) -->
+    <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat filter blur-sm scale-105 opacity-40 pointer-events-none" 
+         style="background-image: url('IMG_7847.jpeg'), url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=1920&auto=format&fit=crop');"></div>
+    <div class="fixed inset-0 z-0 bg-gradient-to-b from-slate-900/75 via-slate-900/60 to-slate-900/80 pointer-events-none"></div>
 
     <!-- Toast 通知 -->
     <div id="toast" class="fixed top-5 right-5 z-50 hidden bg-slate-900/90 backdrop-blur-md text-white px-5 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all border border-slate-700"></div>
@@ -42,8 +43,12 @@
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-shopee-500 flex items-center justify-center text-white font-black text-xl shadow-md">
-                    花
+                <!-- 右上角 Icon 已更換為花媽圖片 -->
+                <div class="w-10 h-10 rounded-2xl overflow-hidden shadow-md border-2 border-rose-400 bg-rose-100 flex-shrink-0">
+                    <img src="IMG_7847.jpeg" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=200&auto=format&fit=crop';" 
+                         alt="花媽" 
+                         class="w-full h-full object-cover">
                 </div>
                 <div>
                     <h1 class="font-bold text-slate-900 text-base leading-tight">flowermom 社群推廣優惠連結轉換器</h1>
@@ -51,20 +56,44 @@
                 </div>
             </div>
             <span class="px-3 py-1 bg-shopee-50 text-shopee-600 text-xs font-bold rounded-full border border-shopee-100">
-                <i class="fa-solid fa-bolt mr-1"></i> 
+                <i class="fa-solid fa-bolt mr-1"></i> 優惠中
             </span>
         </div>
     </header>
 
-    <main class="max-w-3xl mx-auto px-4 py-10 flex-grow w-full relative z-10">
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full relative z-10 space-y-6">
+
+        <!-- 蝦皮雙十一優惠領券專區 -->
+        <section class="bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 rounded-3xl p-5 sm:p-6 text-white shadow-2xl relative overflow-hidden border border-red-400/40">
+            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-1.5 bg-yellow-400 text-red-950 px-3 py-0.5 rounded-full text-xs font-black shadow-sm">
+                        <i class="fa-solid fa-fire text-red-600"></i> 限時強檔
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-black tracking-wide text-white drop-shadow">
+                        蝦皮雙十一專屬優惠領券專區
+                    </h3>
+                    <p class="text-xs sm:text-sm text-red-100 font-medium">
+                        全站折價券、免運券大放送，搶先領取省更多！
+                    </p>
+                </div>
+                
+                <a href="https://s.shopee.tw/AKbgKikxcQ" target="_blank" rel="noopener noreferrer" 
+                   class="w-full sm:w-auto shrink-0 px-6 py-3.5 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-black text-base rounded-2xl shadow-lg hover:shadow-yellow-400/30 transition flex items-center justify-center gap-2 border-2 border-yellow-200">
+                    <i class="fa-solid fa-ticket text-red-700"></i> 趕緊領券
+                </a>
+            </div>
+        </section>
 
         <!-- 連結轉換器工具區塊 -->
-        <section id="converter" class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-2xl space-y-6">
-            <div class="border-b border-slate-100 pb-5">
+        <section id="converter" class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-2xl space-y-6">
+            <div class="border-b border-slate-100 pb-4">
                 <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2.5">
                     <i class="fa-solid fa-link text-shopee-500 text-2xl"></i> 社群推廣優惠連結轉換器
                 </h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1.5">貼上蝦皮商品網址，轉換成推廣優惠連結</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">貼上蝦皮商品網址，自動轉換成「商品1 點擊購買」推廣優惠連結</p>
             </div>
 
             <div class="space-y-5">
@@ -72,7 +101,7 @@
                     <label for="input-url" class="block text-sm font-bold text-slate-800 mb-2">
                         請貼上蝦皮商品網址：
                     </label>
-                    <textarea id="input-url" rows="3" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-base font-mono transition resize-none placeholder:text-slate-300 shadow-inner"></textarea>
+                    <textarea id="input-url" rows="4" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-base font-mono transition resize-none placeholder:text-slate-300 shadow-inner"></textarea>
                 </div>
 
                 <button onclick="convertLink()" class="w-full py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2">
@@ -83,31 +112,32 @@
                 <div id="result-box" class="hidden p-6 bg-slate-900 rounded-2xl text-white space-y-5 shadow-xl transition-all">
                     <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
                         <span class="font-bold"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> 轉換成功</span>
-                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono"></span>
+                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono">已封裝追蹤碼</span>
                     </div>
 
-                    <!-- 視覺預覽展示區（不顯示長網址，僅顯示封裝文字） -->
+                    <!-- 視覺預覽展示區（僅顯示封裝文字「商品1 點擊購買」） -->
                     <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
-                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider"></span>
+                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">預覽效果：</span>
                         <div class="text-lg font-bold text-amber-400 pt-1">
-                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
+                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">商品1 點擊購買</a>
                         </div>
                     </div>
 
                     <!-- 操作按鈕區 -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                        
-                        <button onclick="copyMarkdownText()" class="py-3 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <button onclick="copyRichText()" class="py-3 px-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.98] text-white text-xs sm:text-sm font-bold rounded-xl shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i> 複製富文本連結 (貼社群/LINE)
+                        </button>
+                        <button onclick="copyMarkdownText()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-code"></i> 複製 Markdown 格式
                         </button>
-                        
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- LINE 社群推廣區塊 -->
-        <section class="mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden border border-emerald-400/30">
+        <section class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden border border-emerald-400/30">
             <!-- 裝飾背景圈圈 -->
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
             <div class="absolute -left-10 -top-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-xl pointer-events-none"></div>
@@ -198,6 +228,8 @@
 
         // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件、LINE等，可直接點擊）
         function copyRichText() {
+            if (!currentFullAffiliateUrl) return;
+
             const tempContainer = document.createElement('div');
             tempContainer.contentEditable = 'true';
             tempContainer.innerHTML = `<a href="${currentFullAffiliateUrl}">${DEFAULT_TEXT}</a>`;
@@ -217,6 +249,8 @@
 
         // 複製 Markdown 格式 [商品1 點擊購買](網址)
         function copyMarkdownText() {
+            if (!currentFullAffiliateUrl) return;
+
             const markdown = `[${DEFAULT_TEXT}](${currentFullAffiliateUrl})`;
 
             const temp = document.createElement('textarea');
@@ -227,13 +261,6 @@
             document.body.removeChild(temp);
 
             showToast('已複製 Markdown 格式超連結！');
-        }
-
-        // 測試開啟
-        function openResult() {
-            if (currentFullAffiliateUrl) {
-                window.open(currentFullAffiliateUrl, '_blank');
-            }
         }
     </script>
 </body>
