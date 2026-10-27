@@ -43,7 +43,7 @@
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <!-- 右上角 Icon 已更換為花媽圖片 -->
+                <!-- 右上角 Icon 為花媽圖片 -->
                 <div class="w-10 h-10 rounded-2xl overflow-hidden shadow-md border-2 border-rose-400 bg-rose-100 flex-shrink-0">
                     <img src="IMG_7847.jpeg" 
                          onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=200&auto=format&fit=crop';" 
@@ -93,7 +93,7 @@
                 <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2.5">
                     <i class="fa-solid fa-link text-shopee-500 text-2xl"></i> 社群推廣優惠連結轉換器
                 </h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1">貼上蝦皮商品網址，自動轉換成「商品1 點擊購買」推廣優惠連結</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">貼上蝦皮商品網址，自動轉換成推廣優惠連結</p>
             </div>
 
             <div class="space-y-5">
@@ -101,7 +101,7 @@
                     <label for="input-url" class="block text-sm font-bold text-slate-800 mb-2">
                         請貼上蝦皮商品網址：
                     </label>
-                    <textarea id="input-url" rows="4" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-base font-mono transition resize-none placeholder:text-slate-300 shadow-inner"></textarea>
+                    <textarea id="input-url" rows="3" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-base font-mono transition resize-none placeholder:text-slate-300 shadow-inner"></textarea>
                 </div>
 
                 <button onclick="convertLink()" class="w-full py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2">
@@ -112,21 +112,20 @@
                 <div id="result-box" class="hidden p-6 bg-slate-900 rounded-2xl text-white space-y-5 shadow-xl transition-all">
                     <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
                         <span class="font-bold"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> 轉換成功</span>
-                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono">已封裝追蹤碼</span>
+                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono">已自動注入 Sub ID 追蹤碼</span>
                     </div>
 
-                    <!-- 視覺預覽展示區（僅顯示封裝文字「商品1 點擊購買」） -->
+                    <!-- 視覺預覽展示區（顯示「直接點擊購買商品」） -->
                     <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
                         <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">預覽效果：</span>
                         <div class="text-lg font-bold text-amber-400 pt-1">
-                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">商品1 點擊購買</a>
+                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
                         </div>
                     </div>
 
                     <!-- 操作按鈕區 -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                        <button onclick="copyRichText()" class="py-3 px-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.98] text-white text-xs sm:text-sm font-bold rounded-xl shadow transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-copy"></i> 複製富文本連結 (貼社群/LINE)
+                       
                         </button>
                         <button onclick="copyMarkdownText()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-code"></i> 複製 Markdown 格式
@@ -170,7 +169,8 @@
     <!-- JavaScript 轉碼機制 -->
     <script>
         let currentFullAffiliateUrl = '';
-        const DEFAULT_TEXT = '商品1 點擊購買';
+        const DEFAULT_TEXT = '直接點擊購買商品';
+        const DEFAULT_SUB_ID = 'flowermom_auto'; // 自動注入的預設 Sub ID 追蹤碼
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -179,8 +179,9 @@
             setTimeout(() => toast.classList.add('hidden'), 2500);
         }
 
-        // 為網址精準寫入 an_16397180008 分潤與追蹤參數
+        // 為網址精準寫入 an_16397180008 分潤與自動 Sub ID 追蹤參數
         function addAffiliateParams(originalUrl) {
+            const autoSubId = DEFAULT_SUB_ID;
             try {
                 let formattedUrl = originalUrl.trim();
                 if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
@@ -198,14 +199,21 @@
                 url.searchParams.set('uls_trackid', '56vpsnv100j7');
                 url.searchParams.set('__mobile__', '1');
                 
+                // 自動寫入預設 Sub ID 追蹤參數
+                url.searchParams.set('sub_id', autoSubId);
+                url.searchParams.set('sub_id1', autoSubId);
+                url.searchParams.set('aff_sub', autoSubId);
+                url.searchParams.set('utm_content', autoSubId);
+                
                 return url.toString();
             } catch (e) {
                 const connector = originalUrl.includes('?') ? '&' : '?';
-                return `${originalUrl}${connector}utm_source=an_16397180008&mmp_pid=an_16397180008&utm_medium=affiliates&utm_campaign=id_2Dw3A9RwvP3`;
+                const subParam = `&sub_id=${autoSubId}&sub_id1=${autoSubId}&aff_sub=${autoSubId}&utm_content=${autoSubId}`;
+                return `${originalUrl}${connector}utm_source=an_16397180008&mmp_pid=an_16397180008&utm_medium=affiliates&utm_campaign=id_2Dw3A9RwvP3${subParam}`;
             }
         }
 
-        // 前端轉換處理（固定顯示「商品1 點擊購買」）
+        // 前端轉換處理（固定顯示「直接點擊購買商品」）
         function convertLink() {
             const input = document.getElementById('input-url').value.trim();
 
@@ -214,7 +222,7 @@
                 return;
             }
 
-            // 生成真實帶分潤參數的可開網址
+            // 生成真實帶分潤與自動 Sub ID 參數的可開網址
             currentFullAffiliateUrl = addAffiliateParams(input);
 
             // 更新畫面中的預覽連結與文字
@@ -223,7 +231,7 @@
             previewLink.href = currentFullAffiliateUrl;
 
             document.getElementById('result-box').classList.remove('hidden');
-            showToast('轉換成功！已封裝為「' + DEFAULT_TEXT + '」分潤超連結');
+            showToast('轉換成功！);
         }
 
         // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件、LINE等，可直接點擊）
@@ -247,7 +255,7 @@
             showToast(`已複製：「${DEFAULT_TEXT}」富文本超連結！`);
         }
 
-        // 複製 Markdown 格式 [商品1 點擊購買](網址)
+        // 複製 Markdown 格式 [直接點擊購買商品](網址)
         function copyMarkdownText() {
             if (!currentFullAffiliateUrl) return;
 
