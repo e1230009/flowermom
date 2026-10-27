@@ -124,10 +124,8 @@
                     </div>
 
                     <!-- 操作按鈕區 -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                       
-                        </button>
-                        <button onclick="copyMarkdownText()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
+                    <div class="flex justify-end pt-1">
+                        <button onclick="copyMarkdownText()" class="w-full sm:w-auto py-3 px-6 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-code"></i> 複製 Markdown 格式
                         </button>
                     </div>
@@ -170,7 +168,6 @@
     <script>
         let currentFullAffiliateUrl = '';
         const DEFAULT_TEXT = '直接點擊購買商品';
-        const DEFAULT_SUB_ID = 'flowermom_auto'; // 自動注入的預設 Sub ID 追蹤碼
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -179,9 +176,17 @@
             setTimeout(() => toast.classList.add('hidden'), 2500);
         }
 
-        // 為網址精準寫入 an_16397180008 分潤與自動 Sub ID 追蹤參數
+        // 動態生成帶有時間戳與隨機碼的專屬 Sub ID
+        function generateRandomSubId() {
+            const timestamp = Math.floor(Date.now() / 1000);
+            const randomHex = Math.random().toString(36).substring(2, 6);
+            return `fm_${timestamp}_${randomHex}`;
+        }
+
+        // 為網址精準寫入 an_16397180008 分潤與隨機 Sub ID 追蹤參數
         function addAffiliateParams(originalUrl) {
-            const autoSubId = DEFAULT_SUB_ID;
+            // 每次呼叫皆產生全新的隨機 Sub ID
+            const autoSubId = generateRandomSubId();
             try {
                 let formattedUrl = originalUrl.trim();
                 if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
@@ -199,7 +204,7 @@
                 url.searchParams.set('uls_trackid', '56vpsnv100j7');
                 url.searchParams.set('__mobile__', '1');
                 
-                // 自動寫入預設 Sub ID 追蹤參數
+                // 寫入隨機生成的 Sub ID 追蹤參數
                 url.searchParams.set('sub_id', autoSubId);
                 url.searchParams.set('sub_id1', autoSubId);
                 url.searchParams.set('aff_sub', autoSubId);
@@ -222,7 +227,7 @@
                 return;
             }
 
-            // 生成真實帶分潤與自動 Sub ID 參數的可開網址
+            // 生成真實帶分潤與隨機 Sub ID 參數的可開網址
             currentFullAffiliateUrl = addAffiliateParams(input);
 
             // 更新畫面中的預覽連結與文字
@@ -231,28 +236,21 @@
             previewLink.href = currentFullAffiliateUrl;
 
             document.getElementById('result-box').classList.remove('hidden');
-            showToast('轉換成功！');
+            showToast('轉換成功！已注入獨立隨機 Sub ID 追蹤碼');
         }
 
         // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件、LINE等，可直接點擊）
         function copyRichText() {
             if (!currentFullAffiliateUrl) return;
 
-            const tempContainer = document.createElement('div');
-            tempContainer.contentEditable = 'true';
-            tempContainer.innerHTML = `<a href="${currentFullAffiliateUrl}">${DEFAULT_TEXT}</a>`;
-            document.body.appendChild(tempContainer);
-
-            const range = document.createRange();
-            range.selectNodeContents(tempContainer);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-
+            const temp = document.createElement('textarea');
+            temp.value = currentFullAffiliateUrl;
+            document.body.appendChild(temp);
+            temp.select();
             document.execCommand('copy');
-            document.body.removeChild(tempContainer);
+            document.body.removeChild(temp);
 
-            showToast(`已複製：「${DEFAULT_TEXT}」富文本超連結！`);
+            showToast('已複製分潤網址！');
         }
 
         // 複製 Markdown 格式 [直接點擊購買商品](網址)
