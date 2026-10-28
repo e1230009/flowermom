@@ -32,10 +32,10 @@
 </head>
 <body class="flex flex-col min-h-full text-slate-800 relative bg-slate-50 antialiased selection:bg-rose-500 selection:text-white">
 
-    <!-- 背景圖片與半透明遮罩 (使用上傳的 IMG_7847.jpeg) -->
-    <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat filter blur-sm scale-105 opacity-15 pointer-events-none" 
-         style="background-image: url('IMG_7847.jpeg'), url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=1920&auto=format&fit=crop');"></div>
-    <div class="fixed inset-0 z-0 bg-gradient-to-b from-slate-50/90 via-white/95 to-slate-100/95 pointer-events-none"></div>
+    <!-- 背景圖片與半透明遮罩 (明確使用上傳的 IMG_7847.jpeg) -->
+    <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat filter blur-[1px] scale-105 opacity-20 pointer-events-none" 
+         style="background-image: url('IMG_7847.jpeg');"></div>
+    <div class="fixed inset-0 z-0 bg-gradient-to-b from-slate-50/85 via-white/90 to-slate-100/90 pointer-events-none"></div>
 
     <!-- Toast 通知浮動視窗 -->
     <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-20px] opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2.5 border border-slate-700">
