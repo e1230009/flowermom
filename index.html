@@ -43,7 +43,7 @@
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <!-- 右上角 Icon 為花媽圖片 -->
+                <!-- 右上角 Icon 已更換為花媽圖片 -->
                 <div class="w-10 h-10 rounded-2xl overflow-hidden shadow-md border-2 border-rose-400 bg-rose-100 flex-shrink-0">
                     <img src="IMG_7847.jpeg" 
                          onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=200&auto=format&fit=crop';" 
@@ -64,12 +64,12 @@
     <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full relative z-10 space-y-6">
 
         <!-- 蝦皮雙十一優惠領券專區 -->
-        <section class="bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 rounded-3xl p-5 sm:p-7 text-white shadow-2xl relative overflow-hidden border border-red-400/40">
+        <section class="bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 rounded-3xl p-5 sm:p-6 text-white shadow-2xl relative overflow-hidden border border-red-400/40">
             <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
             
-            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
-                <div class="space-y-1.5">
-                    <div class="inline-flex items-center gap-1.5 bg-yellow-400 text-red-950 px-3.5 py-1 rounded-full text-xs font-black shadow-sm">
+            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-1.5 bg-yellow-400 text-red-950 px-3 py-0.5 rounded-full text-xs font-black shadow-sm">
                         <i class="fa-solid fa-fire text-red-600"></i> 限時強檔
                     </div>
                     <h3 class="text-xl sm:text-2xl font-black tracking-wide text-white drop-shadow">
@@ -79,11 +79,6 @@
                         全站折價券、免運券大放送，搶先領取省更多！
                     </p>
                 </div>
-                
-                <a href="https://s.shopee.tw/AKbgKikxcQ" target="_blank" rel="noopener noreferrer" 
-                   class="w-full sm:w-auto shrink-0 px-8 py-4 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-black text-lg sm:text-xl rounded-2xl shadow-xl hover:shadow-yellow-400/40 transition flex items-center justify-center gap-2.5 border-2 border-yellow-200 tracking-wide">
-                    <i class="fa-solid fa-ticket text-red-700 text-xl sm:text-2xl"></i> 趕緊領券
-                </a>
             </div>
         </section>
 
@@ -104,7 +99,7 @@
                     <textarea id="input-url" rows="3" placeholder="https://shopee.tw/product/12345/67890" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-base font-mono transition resize-none placeholder:text-slate-300 shadow-inner"></textarea>
                 </div>
 
-                <button onclick="convertLink()" class="w-full py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2">
+                <button id="convert-btn" onclick="convertLink()" class="w-full py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為推廣優惠連結
                 </button>
 
@@ -112,20 +107,21 @@
                 <div id="result-box" class="hidden p-6 bg-slate-900 rounded-2xl text-white space-y-5 shadow-xl transition-all">
                     <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
                         <span class="font-bold"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> 轉換成功</span>
-                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono"></span>
+                        <span class="text-emerald-400 text-[11px] bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded-md font-mono">已封裝追蹤碼</span>
                     </div>
 
-                    <!-- 視覺預覽展示區（顯示「直接點擊購買商品」） -->
+                    <!-- 視覺預覽展示區（僅顯示封裝文字「商品1 點擊購買」） -->
                     <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
-                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">推廣連結：</span>
-                        <div class="text-2xl sm:text-3xl font-black text-amber-400 pt-2 tracking-wide leading-relaxed">
-                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-black hover:text-amber-300 transition">直接點擊購買商品</a>
+                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">預覽效果：</span>
+                        <div class="text-lg font-bold text-amber-400 pt-1">
+                            👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
                         </div>
                     </div>
 
                     <!-- 操作按鈕區 -->
-                    <div class="flex justify-end pt-1">
-                        <button onclick="copyMarkdownText()" class="w-full sm:w-auto py-3 px-6 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        
+                        <button onclick="copyMarkdownText()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-code"></i> 複製 Markdown 格式
                         </button>
                     </div>
@@ -139,9 +135,9 @@
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
             <div class="absolute -left-10 -top-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-xl pointer-events-none"></div>
 
-            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
                 <div class="space-y-2">
-                    <div class="inline-flex items-center gap-2 bg-emerald-700/50 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold text-emerald-100 border border-emerald-400/30">
+                    <div class="inline-flex items-center gap-2 bg-emerald-700/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-emerald-100 border border-emerald-400/30">
                         <i class="fa-brands fa-line text-lg text-emerald-300"></i> 花媽獨家優惠群
                     </div>
                     <h3 class="text-xl sm:text-2xl font-black text-white leading-tight">
@@ -152,8 +148,8 @@
                     </p>
                 </div>
                 
-                <a href="https://reurl.cc/oKNzLV" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto shrink-0 px-8 py-4 sm:py-5 bg-white hover:bg-emerald-50 text-emerald-700 font-black text-base sm:text-lg rounded-2xl shadow-xl hover:shadow-2xl active:scale-95 transition flex items-center justify-center gap-3 tracking-wide">
-                    <i class="fa-brands fa-line text-2xl sm:text-3xl text-[#00B900]"></i> 立即加入社群
+                <a href="https://reurl.cc/oKNzLV" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto shrink-0 px-6 py-4 bg-white hover:bg-emerald-50 text-emerald-700 font-black text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-line text-xl text-[#00B900]"></i> 立即加入社群
                 </a>
             </div>
         </section>
@@ -168,6 +164,8 @@
     <script>
         let currentFullAffiliateUrl = '';
         const DEFAULT_TEXT = '直接點擊購買商品';
+        // 您的 蝦皮 Affiliate ID
+        const AFFILIATE_ID = '16397180008';
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -183,42 +181,28 @@
             return `fm_${timestamp}_${randomHex}`;
         }
 
-        // 為網址精準寫入 an_16397180008 分潤與隨機 Sub ID 追蹤參數
-        function addAffiliateParams(originalUrl) {
-            // 每次呼叫皆產生全新的隨機 Sub ID
-            const autoSubId = generateRandomSubId();
+        // 根據官方步驟二至步驟四構建 redirection 網址
+        function addAffiliateParams(originalUrl, autoSubId) {
             try {
                 let formattedUrl = originalUrl.trim();
                 if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
                     formattedUrl = 'https://' + formattedUrl;
                 }
 
-                const url = new URL(formattedUrl);
-                
-                // 強制注入專屬分潤追蹤參數
-                url.searchParams.set('utm_source', 'an_16397180008');
-                url.searchParams.set('mmp_pid', 'an_16397180008');
-                url.searchParams.set('utm_medium', 'affiliates');
-                url.searchParams.set('utm_campaign', 'id_2Dw3A9RwvP3');
-                url.searchParams.set('utm_term', 'frer4co7gbcb');
-                url.searchParams.set('uls_trackid', '56vpsnv100j7');
-                url.searchParams.set('__mobile__', '1');
-                
-                // 寫入隨機生成的 Sub ID 追蹤參數
-                url.searchParams.set('sub_id', autoSubId);
-                url.searchParams.set('sub_id1', autoSubId);
-                url.searchParams.set('aff_sub', autoSubId);
-                url.searchParams.set('utm_content', autoSubId);
-                
-                return url.toString();
+                // 步驟 2：對原始網址進行 URL 編碼 (encodeURIComponent)
+                const encodedUrl = encodeURIComponent(formattedUrl);
+
+                // 步驟 3 & 4：組合 https://s.shopee.tw/an_redir?origin_link={編碼網址}?&affiliate_id={affiliate_id}&sub_id={sub_id}
+                const finalRedirUrl = `https://s.shopee.tw/an_redir?origin_link=${encodedUrl}?&affiliate_id=${AFFILIATE_ID}&sub_id=${autoSubId}`;
+
+                return finalRedirUrl;
             } catch (e) {
-                const connector = originalUrl.includes('?') ? '&' : '?';
-                const subParam = `&sub_id=${autoSubId}&sub_id1=${autoSubId}&aff_sub=${autoSubId}&utm_content=${autoSubId}`;
-                return `${originalUrl}${connector}utm_source=an_16397180008&mmp_pid=an_16397180008&utm_medium=affiliates&utm_campaign=id_2Dw3A9RwvP3${subParam}`;
+                const encodedUrl = encodeURIComponent(originalUrl.trim());
+                return `https://s.shopee.tw/an_redir?origin_link=${encodedUrl}?&affiliate_id=${AFFILIATE_ID}&sub_id=${autoSubId}`;
             }
         }
 
-        // 前端轉換處理（固定顯示「直接點擊購買商品」）
+        // 前端轉換處理 (已關閉 Cloudflare，純前端瞬間完成)
         function convertLink() {
             const input = document.getElementById('input-url').value.trim();
 
@@ -227,8 +211,11 @@
                 return;
             }
 
-            // 生成真實帶分潤與隨機 Sub ID 參數的可開網址
-            currentFullAffiliateUrl = addAffiliateParams(input);
+            const autoSubId = generateRandomSubId();
+            
+            // 直接產生官方重導向分潤網址
+            currentFullAffiliateUrl = addAffiliateParams(input, autoSubId);
+            showToast('轉換成功！已帶入專屬分潤與動態 Sub ID');
 
             // 更新畫面中的預覽連結與文字
             const previewLink = document.getElementById('preview-link');
@@ -236,11 +223,10 @@
             previewLink.href = currentFullAffiliateUrl;
 
             document.getElementById('result-box').classList.remove('hidden');
-            showToast('轉換成功！');
         }
 
-        // 複製帶有 HTML 超連結的富文本（貼在 Word、網誌、信件、LINE等，可直接點擊）
-        function copyRichText() {
+        // 複製純網址
+        function copyRawUrl() {
             if (!currentFullAffiliateUrl) return;
 
             const temp = document.createElement('textarea');
@@ -250,7 +236,7 @@
             document.execCommand('copy');
             document.body.removeChild(temp);
 
-            showToast('已複製分潤網址！');
+            showToast('已複製完整推廣網址！');
         }
 
         // 複製 Markdown 格式 [直接點擊購買商品](網址)
