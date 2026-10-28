@@ -51,19 +51,13 @@
                          class="w-full h-full object-cover">
                 </div>
                 <div>
-                    <h1 class="font-bold text-slate-900 text-base leading-tight">花媽省錢優惠群</h1>
+                    <h1 class="font-bold text-slate-900 text-base leading-tight">flowermom 社群推廣優惠連結轉換器</h1>
                     <p class="text-xs text-slate-500">加入社群一起省錢</p>
                 </div>
             </div>
-            <!-- 右上角社群按鈕群 -->
-            <div class="flex items-center gap-2">
-                <a href="https://reurl.cc/oKNzLV" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 bg-[#00B900] hover:bg-[#009900] active:scale-95 text-white text-xs font-bold rounded-full shadow-md transition flex items-center gap-1.5 border border-emerald-400/40">
-                    <i class="fa-brands fa-line text-sm"></i> 加入 LINE 群
-                </a>
-                <a href="https://www.instagram.com/flowermom0507?dlrf=MXRuMTNmdGl2ZGd6ZA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 hover:opacity-90 active:scale-95 text-white text-xs font-bold rounded-full shadow-md transition flex items-center gap-1.5 border border-pink-400/40">
-                    <i class="fa-brands fa-instagram text-sm"></i> 加入 IG
-                </a>
-            </div>
+            <span class="px-3 py-1 bg-shopee-50 text-shopee-600 text-xs font-bold rounded-full border border-shopee-100">
+                <i class="fa-solid fa-bolt mr-1"></i> 優惠中
+            </span>
         </div>
     </header>
 
@@ -100,15 +94,7 @@
                 <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2.5">
                     <i class="fa-solid fa-link text-shopee-500 text-2xl"></i> 社群推廣優惠連結轉換器
                 </h2>
-                <div class="mt-2 space-y-1">
-                    <p class="text-xs sm:text-sm font-semibold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100 inline-block">
-                        <i class="fa-solid fa-ticket text-rose-500 mr-1"></i> 93折券(平常就有)低消$49最高折$50；9折券(購物節才有)低消$49最高折$100
-                    </p>
-                    <p class="text-xs text-rose-500/90 font-medium pl-1">
-                        ※ 一人5張，數量有限用完為止。
-                    </p>
-                    <p class="text-xs sm:text-sm text-slate-500 pt-1">貼上蝦皮商品網址，轉換成推廣連結輕鬆領卷</p>
-                </div>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">貼上蝦皮商品網址，自動轉換成推廣優惠連結</p>
             </div>
 
             <div class="space-y-5">
@@ -129,9 +115,9 @@
                         <span class="font-bold"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> 轉換成功</span>
                     </div>
 
-                    <!-- 視覺預覽展示區（顯示封裝文字「直接點擊購買商品」） -->
+                    <!-- 視覺預覽展示區（僅顯示封裝文字「商品1 點擊購買」） -->
                     <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 space-y-2">
-                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">推廣連結：</span>
+                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">預覽效果：</span>
                         <div class="text-lg font-bold text-amber-400 pt-1">
                             👉 <a id="preview-link" href="#" target="_blank" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
                         </div>
@@ -139,21 +125,15 @@
 
                     <!-- 操作按鈕區 -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                        <button onclick="copyRawUrl()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-copy"></i> 複製連結
+                        
+                        <button onclick="copyMarkdownText()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 text-xs sm:text-sm font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-code"></i> 複製 Markdown 格式
                         </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- LINE 社群 & IG 雙推廣區塊 -->
-        <section class="bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-700 rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden border border-emerald-400/30">
-            <!-- 裝飾背景圈圈 -->
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-            <div class="absolute -left-10 -top-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left">
         <!-- LINE 社群推廣區塊 -->
         <section class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden border border-emerald-400/30">
             <!-- 裝飾背景圈圈 -->
@@ -182,4 +162,171 @@
     </main>
 
     <footer class="bg-white/90 backdrop-blur-md border-t border-slate-200/80 py-6 text-center text-xs text-slate-600 relative z-10">
-<!-- ... existing code -->
+        <p>© 2026 flowermom - 蝦皮分潤推廣網址工具</p>
+    </footer>
+
+    <!-- JavaScript 轉碼機制 -->
+    <script>
+        let currentFullAffiliateUrl = '';
+        const DEFAULT_TEXT = '直接點擊購買商品';
+        // 您的 蝦皮 Affiliate ID
+        const AFFILIATE_ID = '16397180008';
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2500);
+        }
+
+        // 動態生成帶有時間戳與隨機碼的專屬 Sub ID
+        function generateRandomSubId() {
+            const timestamp = Math.floor(Date.now() / 1000);
+            const randomHex = Math.random().toString(36).substring(2, 6);
+            return `fm_${timestamp}_${randomHex}`;
+        }
+
+        // 自動將短網址 (如 shope.ee / s.shopee.tw) 還原展開為長網址
+        async function expandShortUrl(shortUrl) {
+            let urlStr = shortUrl.trim();
+            if (!urlStr.startsWith('http://') && !urlStr.startsWith('https://')) {
+                urlStr = 'https://' + urlStr;
+            }
+
+            // 如果是蝦皮常見的短網址格式，透過幾種免費的重導向解析服務進行網址還原
+            if (urlStr.includes('shope.ee') || urlStr.includes('s.shopee.tw')) {
+                try {
+                    // 使用免費的 unshorten API 解析真正的跳轉後網址
+                    const apiRes = await fetch(`https://unshorten.me/json/${encodeURIComponent(urlStr)}`);
+                    const data = await apiRes.json();
+                    if (data && data.success && data.resolved_url) {
+                        return data.resolved_url;
+                    }
+                } catch (e) {
+                    console.warn('短網址還原 API 無法回應，將嘗試前端直接解析:', e);
+                }
+            }
+            return urlStr;
+        }
+
+        // 清洗網址：若原本就是分潤/轉址連結，自動提取出原始商品網址
+        function extractCleanShopeeUrl(rawUrl) {
+            let urlStr = rawUrl.trim();
+
+            try {
+                // 若網址包含 origin_link 參數（即其他人產生的 an_redir 分潤轉址）
+                if (urlStr.includes('origin_link=')) {
+                    const parsedUrl = new URL(urlStr);
+                    const originLink = parsedUrl.searchParams.get('origin_link');
+                    if (originLink) {
+                        // 解碼出原本的商品網址
+                        urlStr = decodeURIComponent(originLink);
+                    }
+                }
+
+                // 清除網址尾巴原本附帶的舊分潤與追蹤參數，還原乾淨的商品網址
+                const cleanUrl = new URL(urlStr);
+                const keysToRemove = [
+                    'affiliate_id', 'sub_id', 'sub_id1', 'aff_sub', 'utm_source', 
+                    'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 
+                    'mmp_pid', 'uls_trackid', '__mobile__'
+                ];
+                
+                keysToRemove.forEach(key => cleanUrl.searchParams.delete(key));
+                return cleanUrl.toString();
+            } catch (e) {
+                // 若解析失敗，則用正則替換移除舊的 affiliate_id 與 sub_id
+                return urlStr.replace(/([?&])affiliate_id=[^&]*/gi, '')
+                             .replace(/([?&])sub_id=[^&]*/gi, '');
+            }
+        }
+
+        // 根據官方步驟二至步驟四構建 redirection 網址
+        function addAffiliateParams(originalUrl, autoSubId) {
+            // 1. 先清洗網址，確保替換掉原本的分潤 ID
+            const cleanedUrl = extractCleanShopeeUrl(originalUrl);
+
+            // 2. 步驟 2：對清洗後的原始網址進行 URL 編碼
+            const encodedUrl = encodeURIComponent(cleanedUrl);
+
+            // 3. 步驟 3 & 4：組合帶有您專屬 ID 的 redirection 短網址
+            const finalRedirUrl = `https://s.shopee.tw/an_redir?origin_link=${encodedUrl}?&affiliate_id=${AFFILIATE_ID}&sub_id=${autoSubId}`;
+
+            return finalRedirUrl;
+        }
+
+        // 前端轉換處理 (加入還原短網址步驟)
+        async function convertLink() {
+            const input = document.getElementById('input-url').value.trim();
+            const convertBtn = document.getElementById('convert-btn');
+
+            if (!input) {
+                showToast('請先貼上蝦皮網址');
+                return;
+            }
+
+            // 按鈕載入狀態
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 解析並轉換中...`;
+
+            try {
+                // 1. 先嘗試將粉絲貼上的短網址進行還原展開
+                const expandedUrl = await expandShortUrl(input);
+
+                // 2. 生成專屬 Sub ID 並封裝為您的分潤連結
+                const autoSubId = generateRandomSubId();
+                currentFullAffiliateUrl = addAffiliateParams(expandedUrl, autoSubId);
+
+                showToast('轉換成功！');
+
+                // 更新畫面中的預覽連結與文字
+                const previewLink = document.getElementById('preview-link');
+                previewLink.innerText = DEFAULT_TEXT;
+                previewLink.href = currentFullAffiliateUrl;
+
+                document.getElementById('result-box').classList.remove('hidden');
+            } catch (err) {
+                showToast('轉換失敗，請確認網址格式');
+            } finally {
+                convertBtn.disabled = false;
+                convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為推廣優惠連結`;
+            }
+        }
+
+        // 複製 Markdown 格式 [直接點擊購買商品](網址)
+        function copyMarkdownText() {
+            if (!currentFullAffiliateUrl) {
+                showToast('請先轉換網址');
+                return;
+            }
+            const markdownText = `[${DEFAULT_TEXT}](${currentFullAffiliateUrl})`;
+            
+            // 使用相容性佳的剪貼簿複製語法
+            const tempInput = document.createElement('textarea');
+            tempInput.value = markdownText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast('已複製 Markdown 格式連結！');
+        }
+
+        // 複製純網址
+        function copyRawUrl() {
+            if (!currentFullAffiliateUrl) {
+                showToast('請先轉換網址');
+                return;
+            }
+            const tempInput = document.createElement('textarea');
+            tempInput.value = currentFullAffiliateUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast('已複製完整轉碼網址！');
+        }
+    </script>
+</body>
+</html>
