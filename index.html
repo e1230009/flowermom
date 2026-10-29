@@ -228,7 +228,7 @@
                         <a href="https://s.shopee.tw/30p8ShXbaD" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-4 py-2 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-ticket"></i> 這裡輸入領券
                         </a>
-                    </div>
+                   --></div>
                 </div>
 
                 <!-- 折扣碼項目 3 (新增空白) -->
@@ -247,11 +247,11 @@
                         <a href="https://s.shopee.tw/30p8ShXbaD" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-4 py-2 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-ticket"></i> 這裡輸入領券
                         </a>
-                    </div>
+                    --></div>
                 </div>
 
                 <!-- 折扣碼項目 4 (新增空白) -->
-                <!--<div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
@@ -267,7 +267,7 @@
                             <i class="fa-solid fa-ticket"></i> 這裡輸入領券
                         </a>
                     </div>
-                --></div>
+                </div>
             </div>
         </section>
 
@@ -362,11 +362,11 @@
             copyToClipboard(code, `已複製折扣碼：${code}`);
         }
 
-        // 動態生成帶有時間戳與隨機碼的專屬 Sub ID
+        // 動態生成帶有 flowermom+亂數 的專屬 Sub ID
         function generateRandomSubId() {
             const timestamp = Math.floor(Date.now() / 1000);
             const randomHex = Math.random().toString(36).substring(2, 6);
-            return `fm_${timestamp}_${randomHex}`;
+            return `flowermom_${timestamp}_${randomHex}`;
         }
 
         // 清空輸入
