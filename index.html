@@ -32,7 +32,7 @@
 </head>
 <body class="flex flex-col min-h-full text-slate-800 relative bg-slate-50 antialiased selection:bg-rose-500 selection:text-white">
 
-    <!-- 背景圖片與半透明遮罩 (明確使用上傳的 IMG_7847.jpeg) -->
+    <!-- 背景圖片與半透明遮罩 -->
     <div class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat filter blur-[1px] scale-105 opacity-70 pointer-events-none" 
          style="background-image: url('IMG_7847.jpeg');"></div>
     <div class="fixed inset-0 z-0 bg-gradient-to-b from-slate-50/30 via-white/90 to-slate-100/50 pointer-events-none"></div>
@@ -106,7 +106,7 @@
                         <i class="fa-solid fa-fire text-rose-600"></i> 9折券(購物節才有)低消$49最高折$100
                     </p>
                     <p class="text-amber-700 text-xs pt-0.5 font-normal">
-                        <i class="fa-solid fa-circle-info mr-0.5"></i> 一人5張劵/天，結帳選優惠劵就可以看到，數量有限用完為止。
+                        <i class="fa-solid fa-circle-info mr-0.5"></i> 一人5張卷/天，數量有限用完為止。
                     </p>
                 </div>
 
@@ -162,9 +162,34 @@
             </div>
         </section>
 
+        <!-- 優惠折扣碼分享區塊 -->
+        <section id="promo-codes" class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-8 border border-slate-200/80 shadow-xl space-y-4">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2.5">
+                    <i class="fa-solid fa-tags text-amber-500 text-xl sm:text-2xl"></i> 優惠折扣碼分享
+                </h2>
+                <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-bold">即時更新</span>
+            </div>
+
+            <div class="space-y-3">
+                <!-- 折扣碼項目範本 -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">全站折價券</span>
+                            <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-1">空白</span>
+                        </div>
+                        <p class="text-xs text-slate-500">無</p>
+                    </div>
+                    <button onclick="copyCode('FLOW2026MOM')" class="w-full sm:w-auto px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i> 複製折扣碼
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- LINE 社群推廣區塊 -->
         <section class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-emerald-400/30">
-            <!-- 裝飾背景圈圈 -->
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
             <div class="absolute -left-10 -top-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-xl pointer-events-none"></div>
 
@@ -241,6 +266,11 @@
             document.body.removeChild(tempInput);
         }
 
+        // 複製折扣碼
+        function copyCode(code) {
+            copyToClipboard(code, `已複製折扣碼：${code}`);
+        }
+
         // 動態生成帶有時間戳與隨機碼的專屬 Sub ID
         function generateRandomSubId() {
             const timestamp = Math.floor(Date.now() / 1000);
@@ -273,7 +303,7 @@
             }
         }
 
-        // 展開短網址輔助
+        // 展開短網址輔助（支援 tw.shp.ee / shope.ee / s.shopee.tw）
         async function expandShortUrl(shortUrl) {
             let urlStr = shortUrl.trim();
             if (!urlStr.startsWith('http://') && !urlStr.startsWith('https://')) {
@@ -322,7 +352,7 @@
             }
         }
 
-        // 構建官方分潤轉址 (需含 ?&affiliate_id)
+        // 構建官方分潤轉址 (含 ?&affiliate_id)
         function addAffiliateParams(originalUrl, autoSubId) {
             const cleanedUrl = extractCleanShopeeUrl(originalUrl);
             const encodedUrl = encodeURIComponent(cleanedUrl);
