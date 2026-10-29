@@ -142,51 +142,42 @@
                     </p>
                 </div>
 
-                <p class="text-xs sm:text-sm text-slate-500 mt-3">貼上蝦皮商品網址，自動轉換成花媽社群專屬推廣連結</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-3">請貼上蝦皮商品網址（一行一個，最多 5 個連結），自動轉換成花媽社群專屬推廣連結</p>
             </div>
 
             <div class="space-y-5">
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label for="input-url" class="text-xs sm:text-sm font-bold text-slate-700">
-                            請貼上蝦皮商品網址：
+                            請貼上蝦皮商品網址（最多 5 個，以換行分隔）：
                         </label>
                     </div>
-                    <textarea id="input-url" rows="3" placeholder="連結貼這裡" class="w-full px-4 py-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-slate-900 text-sm sm:text-base font-mono transition duration-200 resize-none placeholder:text-slate-400 shadow-inner"></textarea>
+                    <textarea id="input-url" rows="5" placeholder="連結貼這裡&#10;https://tw.shp.ee/xxxx1&#10;https://tw.shp.ee/xxxx2&#10;(一行貼一個網址，最多可貼 5 個)" class="w-full px-4 py-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-slate-900 text-sm sm:text-base font-mono transition duration-200 resize-none placeholder:text-slate-400 shadow-inner"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <button id="convert-btn" onclick="convertLink()" class="sm:col-span-3 py-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-shopee-500/20 transition duration-200 flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為推廣優惠連結
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 批量轉換為推廣優惠連結
                     </button>
                     <button onclick="resetForm()" class="py-4 bg-slate-100 hover:bg-slate-200 active:scale-[0.99] text-slate-700 font-bold text-sm rounded-2xl border border-slate-300 transition duration-200 flex items-center justify-center gap-1.5 cursor-pointer">
                         <i class="fa-solid fa-rotate-right"></i> 清空
                     </button>
                 </div>
 
-                <!-- 轉換結果輸出區 -->
+                <!-- 轉換結果輸出區 (多連結顯示) -->
                 <div id="result-box" class="hidden p-5 sm:p-6 bg-slate-900 rounded-2xl text-white space-y-5 shadow-xl transition-all border border-slate-800">
                     <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
                         <span class="font-bold text-emerald-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> 轉換成功！
+                            <i class="fa-solid fa-circle-check"></i> <span id="success-count">轉換成功！</span>
                         </span>
-                    </div>
-
-                    <!-- 視覺預覽展示區 -->
-                    <div class="bg-slate-800/90 p-4 sm:p-5 rounded-2xl border border-slate-700 space-y-2">
-                        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">推廣連結：</span>
-                        <div class="pt-2 flex items-center justify-center">
-                            <a id="preview-link" href="#" target="_blank" rel="noopener noreferrer" class="w-full text-center py-4 px-6 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-lg hover:shadow-yellow-400/30 transition-all duration-200 active:scale-98 flex items-center justify-center gap-2 border-2 border-yellow-200 tracking-wide">
-                                <span>👉</span> 直接點擊購買商品
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- 複製按鈕區 -->
-                    <div class="pt-1">
-                        <button onclick="copyRawUrl()" class="w-full py-3.5 px-4 bg-shopee-500 hover:bg-shopee-600 active:scale-[0.98] text-white text-sm font-bold rounded-xl shadow-lg shadow-shopee-500/20 transition flex items-center justify-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-copy text-base"></i> 複製網址
+                        <button onclick="copyAllRawUrls()" class="text-xs text-amber-400 hover:text-amber-300 font-bold underline flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-copy"></i> 一鍵複製全部轉碼網址
                         </button>
+                    </div>
+
+                    <!-- 視覺預覽動態產生區 -->
+                    <div id="results-container" class="space-y-4">
+                        <!-- 動態插入轉換後的按鈕區塊 -->
                     </div>
                 </div>
             </div>
@@ -293,8 +284,7 @@
 
     <!-- JavaScript 轉碼與互動邏輯 -->
     <script>
-        let currentFullAffiliateUrl = '';
-        let currentSubId = '';
+        let convertedUrls = [];
         const DEFAULT_TEXT = '直接點擊購買商品';
         const AFFILIATE_ID = '16397180008';
 
@@ -363,7 +353,8 @@
         function resetForm() {
             document.getElementById('input-url').value = '';
             document.getElementById('result-box').classList.add('hidden');
-            currentFullAffiliateUrl = '';
+            document.getElementById('results-container').innerHTML = '';
+            convertedUrls = [];
             showToast('已清空輸入框', true);
         }
 
@@ -382,6 +373,10 @@
             if (isValidShopeeShortUrl(urlStr)) {
                 try {
                     const apiRes = await fetch(`https://unshorten.me/json/${encodeURIComponent(urlStr)}`);
+                    if (apiRes.status === 429) {
+                        console.warn('API 達到請求限制 (429)，改用直轉模式');
+                        return urlStr;
+                    }
                     const data = await apiRes.json();
                     if (data && data.success && data.resolved_url) {
                         return data.resolved_url;
@@ -428,59 +423,111 @@
             return `https://s.shopee.tw/an_redir?origin_link=${encodedUrl}?&affiliate_id=${AFFILIATE_ID}&sub_id=${autoSubId}`;
         }
 
-        // 執行轉換
+        // 執行批量轉換
         async function convertLink() {
-            const input = document.getElementById('input-url').value.trim();
+            const rawInput = document.getElementById('input-url').value.trim();
             const convertBtn = document.getElementById('convert-btn');
 
-            if (!input) {
+            if (!rawInput) {
                 showToast('請先貼上蝦皮商品網址！', false);
                 return;
             }
 
-            // 檢查網址格式是否符合指定的短網址格式
-            let testUrl = input;
-            if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
-                testUrl = 'https://' + testUrl;
+            // 按換行分隔連結，過濾空白項
+            let rawLines = rawInput.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+            if (rawLines.length === 0) {
+                showToast('請先貼上蝦皮商品網址！', false);
+                return;
             }
 
-            if (!isValidShopeeShortUrl(testUrl)) {
+            // 限制最多 5 個連結
+            if (rawLines.length > 5) {
+                showToast('最多一次只能轉換 5 個連結喔！已為您取前 5 個進行轉換', false);
+                rawLines = rawLines.slice(0, 5);
+            }
+
+            // 檢查格式
+            const invalidUrls = rawLines.filter(line => {
+                let testUrl = line.startsWith('http://') || line.startsWith('https://') ? line : 'https://' + line;
+                return !isValidShopeeShortUrl(testUrl);
+            });
+
+            if (invalidUrls.length > 0) {
                 showToast('請貼上tw.shp.ee或是s.shopee.tw格式的網址', false);
                 document.getElementById('result-box').classList.add('hidden');
                 return;
             }
 
             convertBtn.disabled = true;
-            convertBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 解析轉換中...`;
+            convertBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 批量解析轉換中 (${rawLines.length} 個)...`;
+
+            convertedUrls = [];
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = '';
 
             try {
-                const expandedUrl = await expandShortUrl(input);
-                currentSubId = generateRandomSubId();
-                currentFullAffiliateUrl = addAffiliateParams(expandedUrl, currentSubId);
+                for (let i = 0; i < rawLines.length; i++) {
+                    const inputLine = rawLines[i];
+                    const expandedUrl = await expandShortUrl(inputLine);
+                    const subId = generateRandomSubId();
+                    const fullAffiliateUrl = addAffiliateParams(expandedUrl, subId);
+                    
+                    convertedUrls.push(fullAffiliateUrl);
 
-                // 更新預覽連結
-                const previewLink = document.getElementById('preview-link');
-                previewLink.innerText = DEFAULT_TEXT;
-                previewLink.href = currentFullAffiliateUrl;
+                    // 產生獨立的結果區塊
+                    const itemHtml = `
+                        <div class="bg-slate-800/90 p-4 sm:p-5 rounded-2xl border border-slate-700 space-y-3">
+                            <div class="flex items-center justify-between text-xs text-slate-400">
+                                <span class="font-bold text-amber-400">商品連結 #${i + 1}</span>
+                            </div>
+                            <a href="${fullAffiliateUrl}" target="_blank" rel="noopener noreferrer" class="w-full text-center py-3.5 px-5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-base sm:text-lg rounded-xl shadow-lg hover:shadow-yellow-400/30 transition-all duration-200 active:scale-98 flex items-center justify-center gap-2 border border-yellow-200 tracking-wide">
+                                <span>👉</span> 直接點擊購買商品 #${i + 1}
+                            </a>
+                            <button onclick="copyToClipboard('${fullAffiliateUrl}', '已複製商品 #${i + 1} 轉碼網址！')" class="w-full py-2 px-3 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-copy"></i> 複製此連結
+                            </button>
+                        </div>
+                    `;
+                    resultsContainer.insertAdjacentHTML('beforeend', itemHtml);
+                }
 
+                document.getElementById('success-count').innerText = `成功轉換 ${convertedUrls.length} 個連結！`;
                 document.getElementById('result-box').classList.remove('hidden');
-                showToast('轉換成功！', true);
+                showToast(`成功轉換 ${convertedUrls.length} 個連結！`, true);
             } catch (err) {
-                showToast('請貼上tw.shp.ee或是s.shopee.tw格式的網址', false);
+                showToast('轉換失敗，請確認網址格式是否正確', false);
             } finally {
                 convertBtn.disabled = false;
-                convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為推廣優惠連結`;
+                convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 批量轉換為推廣優惠連結`;
             }
         }
 
-        // 複製純網址
+        // 一鍵複製所有轉碼網址
+        function copyAllRawUrls() {
+            if (convertedUrls.length === 0) {
+                showToast('無可複製的轉碼網址', false);
+                return;
+            }
+            const allUrlsText = convertedUrls.join('\n');
+            copyToClipboard(allUrlsText, `已複製全部 ${convertedUrls.length} 個轉碼網址！`);
+        }
+
+        // 複製純網址 (保留相容性)
         function copyRawUrl() {
-            if (!currentFullAffiliateUrl) {
+            if (convertedUrls.length === 0) {
                 showToast('請先轉換網址', false);
                 return;
             }
-            copyToClipboard(currentFullAffiliateUrl, '已複製完整轉碼網址！');
+            copyAllRawUrls();
         }
     </script>
 </body>
 </html>
+```
+
+### 更新亮點：
+1. **多網址支援**：輸入框變更為多行格式，粉絲一次可貼上 1~5 個蝦皮連結（以換行分隔）。
+2. **自動限制 5 個**：若輸入超過 5 個連結，系統會給予溫馨提示並自動取前 5 個進行轉換。
+3. **個別按鈕生成**：轉換後會為每個商品連結獨立生成「👉 直接點擊購買商品 #1 ~ #5」及「複製此連結」按鈕。
+4. **一鍵複製全部**：上方新增「一鍵複製全部轉碼網址」按鈕，方便一次複製多個連結分享。
