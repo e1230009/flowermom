@@ -114,7 +114,7 @@
                         <i class="fa-solid fa-fire text-rose-600"></i> 9折券(購物節才有)低消$49最高折$100
                     </p>
                     <p class="text-amber-700 text-xs pt-0.5 font-normal">
-                        <i class="fa-solid fa-circle-info mr-0.5"></i> 一人5張卷/天，數量有限用完為止。
+                        <i class="fa-solid fa-circle-info mr-0.5"></i> 一人5張券/天，數量有限用完為止。
                     </p>
                 </div>
 
@@ -127,9 +127,6 @@
                         <label for="input-url" class="text-xs sm:text-sm font-bold text-slate-700">
                             請貼上蝦皮商品網址：
                         </label>
-                        <button onclick="pasteFromClipboard()" class="text-xs text-shopee-500 hover:text-shopee-600 underline font-normal cursor-pointer">
-                            <i class="fa-regular fa-clipboard mr-1"></i>貼上剪貼簿
-                        </button>
                     </div>
                     <textarea id="input-url" rows="3" placeholder="連結貼這裡" class="w-full px-4 py-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:outline-none focus:ring-4 focus:ring-shopee-500/15 focus:border-shopee-500 text-slate-900 text-sm sm:text-base font-mono transition duration-200 resize-none placeholder:text-slate-400 shadow-inner"></textarea>
                 </div>
@@ -154,9 +151,10 @@
                     <!-- 視覺預覽展示區 -->
                     <div class="bg-slate-800/90 p-4 sm:p-5 rounded-2xl border border-slate-700 space-y-2">
                         <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">推廣連結：</span>
-                        <div class="text-base sm:text-lg font-bold text-amber-400 pt-1 flex items-center gap-2 break-all">
-                            <span>👉</span> 
-                            <a id="preview-link" href="#" target="_blank" rel="noopener noreferrer" class="hover:underline text-amber-400 font-bold">直接點擊購買商品</a>
+                        <div class="pt-2 flex items-center justify-center">
+                            <a id="preview-link" href="#" target="_blank" rel="noopener noreferrer" class="w-full text-center py-4 px-6 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-lg hover:shadow-yellow-400/30 transition-all duration-200 active:scale-98 flex items-center justify-center gap-2 border-2 border-yellow-200 tracking-wide">
+                                <span>👉</span> 直接點擊購買商品
+                            </a>
                         </div>
                     </div>
 
@@ -180,16 +178,58 @@
             </div>
 
             <div class="space-y-3">
-                <!-- 折扣碼項目範本 -->
+                <!-- 折扣碼項目 1 -->
                 <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">全站折價券</span>
+                            <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
                             <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-1">空白</span>
                         </div>
                         <p class="text-xs text-slate-500">無</p>
                     </div>
-                    <button onclick="copyCode('FLOW2026MOM')" class="w-full sm:w-auto px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
+                    <button onclick="copyCodeFromElement('code-1')" class="w-full sm:w-auto px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i> 複製折扣碼
+                    </button>
+                </div>
+
+                <!-- 折扣碼項目 2 (新增空白) -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
+                            <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-2">空白</span>
+                        </div>
+                        <p class="text-xs text-slate-500">無</p>
+                    </div>
+                    <button onclick="copyCodeFromElement('code-2')" class="w-full sm:w-auto px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i> 複製折扣碼
+                    </button>
+                </div>
+
+                <!-- 折扣碼項目 3 (新增空白) -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
+                            <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-3">空白</span>
+                        </div>
+                        <p class="text-xs text-slate-500">無</p>
+                    </div>
+                    <button onclick="copyCodeFromElement('code-3')" class="w-full sm:w-auto px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i> 複製折扣碼
+                    </button>
+                </div>
+
+                <!-- 折扣碼項目 4 (新增空白) -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
+                            <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-4">空白</span>
+                        </div>
+                        <p class="text-xs text-slate-500">無</p>
+                    </div>
+                    <button onclick="copyCodeFromElement('code-4')" class="w-full sm:w-auto px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer">
                         <i class="fa-regular fa-copy"></i> 複製折扣碼
                     </button>
                 </div>
@@ -274,7 +314,16 @@
             document.body.removeChild(tempInput);
         }
 
-        // 複製折扣碼
+        // 複製指定元素的折扣碼內容
+        function copyCodeFromElement(elementId) {
+            const codeEl = document.getElementById(elementId);
+            if (codeEl) {
+                const code = codeEl.innerText.trim();
+                copyToClipboard(code, `已複製折扣碼：${code}`);
+            }
+        }
+
+        // 複製折扣碼（保留相容性）
         function copyCode(code) {
             copyToClipboard(code, `已複製折扣碼：${code}`);
         }
@@ -294,21 +343,9 @@
             showToast('已清空輸入框', true);
         }
 
-        // 自動貼上輔助
-        async function pasteFromClipboard() {
-            try {
-                if (navigator.clipboard && navigator.clipboard.readText) {
-                    const text = await navigator.clipboard.readText();
-                    if (text) {
-                        document.getElementById('input-url').value = text;
-                        showToast('已貼上剪貼簿內容', true);
-                    }
-                } else {
-                    showToast('請使用 Ctrl+V 或點擊輸入框貼上', false);
-                }
-            } catch (err) {
-                showToast('無法讀取剪貼簿，請手動貼上', false);
-            }
+        // 檢查網址是否符合支援格式（tw.shp.ee / s.shopee.tw / shope.ee）
+        function isValidShopeeShortUrl(urlStr) {
+            return urlStr.includes('tw.shp.ee') || urlStr.includes('s.shopee.tw') || urlStr.includes('shope.ee');
         }
 
         // 展開短網址輔助（支援 tw.shp.ee / shope.ee / s.shopee.tw）
@@ -318,7 +355,7 @@
                 urlStr = 'https://' + urlStr;
             }
 
-            if (urlStr.includes('shope.ee') || urlStr.includes('s.shopee.tw') || urlStr.includes('tw.shp.ee')) {
+            if (isValidShopeeShortUrl(urlStr)) {
                 try {
                     const apiRes = await fetch(`https://unshorten.me/json/${encodeURIComponent(urlStr)}`);
                     const data = await apiRes.json();
@@ -377,6 +414,18 @@
                 return;
             }
 
+            // 檢查網址格式是否符合指定的短網址格式
+            let testUrl = input;
+            if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
+                testUrl = 'https://' + testUrl;
+            }
+
+            if (!isValidShopeeShortUrl(testUrl)) {
+                showToast('請貼上tw.shp.ee或是s.shopee.tw格式的網址', false);
+                document.getElementById('result-box').classList.add('hidden');
+                return;
+            }
+
             convertBtn.disabled = true;
             convertBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 解析轉換中...`;
 
@@ -393,7 +442,7 @@
                 document.getElementById('result-box').classList.remove('hidden');
                 showToast('轉換成功！', true);
             } catch (err) {
-                showToast('轉換失敗，請確認網址格式是否正確', false);
+                showToast('請貼上tw.shp.ee或是s.shopee.tw格式的網址', false);
             } finally {
                 convertBtn.disabled = false;
                 convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 轉換為推廣優惠連結`;
