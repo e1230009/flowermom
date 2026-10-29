@@ -280,7 +280,7 @@
                 urlStr = 'https://' + urlStr;
             }
 
-            if (urlStr.includes('shope.ee') || urlStr.includes('s.shopee.tw')) {
+            if (urlStr.includes('shope.ee') || urlStr.includes('s.shopee.tw') || urlStr.includes('tw.shp.ee')) {
                 try {
                     const apiRes = await fetch(`https://unshorten.me/json/${encodeURIComponent(urlStr)}`);
                     const data = await apiRes.json();
