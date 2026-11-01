@@ -325,7 +325,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, increment, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // 全域變數獲取與 Firebase 初始化
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'flowermom-converter-app';
@@ -336,6 +336,11 @@
         // 當日日期 key (YYYY-MM-DD)
         function getTodayKey() {
             return new Date().toISOString().split('T')[0];
+        }
+
+        // 取得雲端文件引用路徑 (符合 Firebase 安全規範)
+        function getStatsDocRef(today) {
+            return doc(collection(db, 'artifacts', appId, 'public', 'data', 'daily_stats'), today);
         }
 
         // 初始化 Firebase Auth 與 Firestore 監聽器
@@ -359,7 +364,7 @@
                     if (!currentUser || !db) return;
 
                     const today = getTodayKey();
-                    const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_stats', today);
+                    const statsDocRef = getStatsDocRef(today);
 
                     // 即時監聽雲端數據變化 (全裝置即時同步顯示)
                     onSnapshot(statsDocRef, (docSnap) => {
@@ -378,7 +383,7 @@
                     });
 
                     // 紀錄當日瀏覽次數 (同一裝置當天僅累加一次)
-                    recordCloudView(statsDocRef, today);
+                    recordCloudView(today);
                 }
             } catch (err) {
                 console.error("Firebase 雲端初始化失敗:", err);
@@ -386,12 +391,13 @@
         }
 
         // 紀錄雲端瀏覽次數 (同一裝置當天只累加一次)
-        async function recordCloudView(statsDocRef, today) {
+        async function recordCloudView(today) {
             const visitedKey = `fm_cloud_visited_${today}`;
             if (localStorage.getItem(visitedKey)) return;
 
             try {
-                // 僅做當天已造訪標記，不儲存任何計數
+                const statsDocRef = getStatsDocRef(today);
+                // 標記當天已造訪
                 localStorage.setItem(visitedKey, 'true');
                 // 雲端 views + 1
                 await setDoc(statsDocRef, { views: increment(1), date: today }, { merge: true });
@@ -405,7 +411,7 @@
             if (!db || !currentUser) return;
             try {
                 const today = getTodayKey();
-                const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_stats', today);
+                const statsDocRef = getStatsDocRef(today);
                 await setDoc(statsDocRef, { conversions: increment(count), date: today }, { merge: true });
             } catch (err) {
                 console.error("雲端轉換次數更新失敗:", err);
@@ -630,22 +636,20 @@
 
                 document.getElementById('success-count').innerText = `成功轉換 ${convertedUrls.length} 個連結！`;
                 document.getElementById('result-box').classList.remove('hidden');
-                    document.getElementById('success-count').innerText = `成功轉換 ${convertedUrls.length} 個連結！`;
-                    document.getElementById('result-box').classList.remove('hidden');
-                    
-                    // 累積當天轉換次數 (純雲端更新)
-                    if (typeof window.incrementCloudConversion === 'function') {
-                        window.incrementCloudConversion(convertedUrls.length);
-                    }
-
-                    showToast(`成功轉換 ${convertedUrls.length} 個連結！`, true);
-                } catch (err) {
-                    showToast('轉換失敗，請確認網址格式是否正確', false);
-                } finally {
-                    convertBtn.disabled = false;
-                    convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 批量轉換為推廣優惠連結`;
+                
+                // 累積當天轉換次數 (純雲端更新)
+                if (typeof window.incrementCloudConversion === 'function') {
+                    window.incrementCloudConversion(convertedUrls.length);
                 }
+
+                showToast(`成功轉換 ${convertedUrls.length} 個連結！`, true);
+            } catch (err) {
+                showToast('轉換失敗，請確認網址格式是否正確', false);
+            } finally {
+                convertBtn.disabled = false;
+                convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 批量轉換為推廣優惠連結`;
             }
+        }
 
         // 一鍵複製所有轉碼網址
         function copyAllRawUrls() {
