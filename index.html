@@ -374,24 +374,24 @@
                             setDoc(statsDocRef, { views: 0, conversions: 0, date: today }, { merge: true });
                         }
                     }, (err) => {
-                        console.warn("雲端數據監聽警報（退回本機顯示）:", err);
+                        console.warn("雲端數據監聽異常:", err);
                     });
 
-                    // 檢查此 IP / 裝置今天是否已計算過瀏覽次數
+                    // 紀錄當日瀏覽次數 (同一裝置當天僅累加一次)
                     recordCloudView(statsDocRef, today);
                 }
             } catch (err) {
-                console.warn("Firebase 雲端連線失敗，退回 LocalStorage 模式:", err);
+                console.error("Firebase 雲端初始化失敗:", err);
             }
         }
 
-        // 紀錄雲端瀏覽次數 (同一裝置/IP當天只扣計一次)
+        // 紀錄雲端瀏覽次數 (同一裝置當天只累加一次)
         async function recordCloudView(statsDocRef, today) {
             const visitedKey = `fm_cloud_visited_${today}`;
             if (localStorage.getItem(visitedKey)) return;
 
             try {
-                // 標記當天已存取
+                // 僅做當天已造訪標記，不儲存任何計數
                 localStorage.setItem(visitedKey, 'true');
                 // 雲端 views + 1
                 await setDoc(statsDocRef, { views: increment(1), date: today }, { merge: true });
@@ -402,18 +402,13 @@
 
         // 暴露全域函數供轉換時呼叫
         window.incrementCloudConversion = async function(count = 1) {
-            if (!db || !currentUser) {
-                // 本機備用累加
-                incrementConversionCount(count);
-                return;
-            }
+            if (!db || !currentUser) return;
             try {
                 const today = getTodayKey();
                 const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_stats', today);
                 await setDoc(statsDocRef, { conversions: increment(count), date: today }, { merge: true });
             } catch (err) {
                 console.error("雲端轉換次數更新失敗:", err);
-                incrementConversionCount(count);
             }
         };
 
@@ -428,86 +423,6 @@
         let convertedUrls = [];
         const DEFAULT_TEXT = '直接點擊購買商品';
         const AFFILIATE_ID = '16397180008';
-
-        // 每日統計計數邏輯 (備用 LocalStorage 計數)
-        async function initDailyStats() {
-            const today = new Date().toISOString().split('T')[0];
-            const savedDate = localStorage.getItem('fm_stats_date');
-
-            // 新的一天自動重置當天跨日資料
-            if (savedDate !== today) {
-                localStorage.setItem('fm_stats_date', today);
-                localStorage.setItem('fm_daily_views', '0');
-                localStorage.setItem('fm_daily_conversions', '0');
-                localStorage.setItem('fm_visited_ips', JSON.stringify([]));
-            }
-
-            // 取得已記錄的 IP 列表
-            let visitedIps = [];
-            try {
-                visitedIps = JSON.parse(localStorage.getItem('fm_visited_ips') || '[]');
-            } catch(e) {
-                visitedIps = [];
-            }
-
-            try {
-                // 透過免費公開 API 獲取使用者真實外網 IP
-                const res = await fetch('https://api.ipify.org?format=json');
-                const data = await res.json();
-                const userIp = data.ip;
-
-                // 若該 IP 今天尚未被記錄過，瀏覽人數才 +1
-                if (userIp && !visitedIps.includes(userIp)) {
-                    visitedIps.push(userIp);
-                    localStorage.setItem('fm_visited_ips', JSON.stringify(visitedIps));
-
-                    let views = parseInt(localStorage.getItem('fm_daily_views') || '0', 10) + 1;
-                    localStorage.setItem('fm_daily_views', views.toString());
-                }
-            } catch (err) {
-                // 若 API 請求失敗，改以 LocalStorage 備用辨識（防重複）
-                console.warn('IP 獲取失敗，切換至備用計數機制:', err);
-                const lastVisitedDate = localStorage.getItem('fm_last_visited_date');
-                if (lastVisitedDate !== today) {
-                    let views = parseInt(localStorage.getItem('fm_daily_views') || '0', 10) + 1;
-                    localStorage.setItem('fm_daily_views', views.toString());
-                    localStorage.setItem('fm_last_visited_date', today);
-                }
-            }
-
-            updateStatsDisplay();
-        }
-
-        // 更新頁面上的統計數字顯示
-        function updateStatsDisplay() {
-            const views = localStorage.getItem('fm_daily_views') || '0';
-            const conversions = localStorage.getItem('fm_daily_conversions') || '0';
-            
-            document.getElementById('daily-views').innerText = parseInt(views, 10).toLocaleString();
-            document.getElementById('daily-conversions').innerText = parseInt(conversions, 10).toLocaleString();
-        }
-
-        // 增加轉換計數
-        function incrementConversionCount(count = 1) {
-            const today = new Date().toISOString().split('T')[0];
-            const savedDate = localStorage.getItem('fm_stats_date');
-
-            if (savedDate !== today) {
-                localStorage.setItem('fm_stats_date', today);
-                localStorage.setItem('fm_daily_views', '1');
-                localStorage.setItem('fm_daily_conversions', count.toString());
-            } else {
-                let conversions = parseInt(localStorage.getItem('fm_daily_conversions') || '0', 10) + count;
-                localStorage.setItem('fm_daily_conversions', conversions.toString());
-            }
-
-            updateStatsDisplay();
-        }
-
-        // 頁面載入完成後初始化統計
-        window.addEventListener('DOMContentLoaded', () => {
-            initDailyStats();
-        });
 
         // 浮動 Toast 訊息提示機制
         let toastTimeout;
@@ -715,22 +630,22 @@
 
                 document.getElementById('success-count').innerText = `成功轉換 ${convertedUrls.length} 個連結！`;
                 document.getElementById('result-box').classList.remove('hidden');
-                
-                // 累積當天轉換次數 (優先同步雲端)
-                if (typeof window.incrementCloudConversion === 'function') {
-                    window.incrementCloudConversion(convertedUrls.length);
-                } else {
-                    incrementConversionCount(convertedUrls.length);
-                }
+                    document.getElementById('success-count').innerText = `成功轉換 ${convertedUrls.length} 個連結！`;
+                    document.getElementById('result-box').classList.remove('hidden');
+                    
+                    // 累積當天轉換次數 (純雲端更新)
+                    if (typeof window.incrementCloudConversion === 'function') {
+                        window.incrementCloudConversion(convertedUrls.length);
+                    }
 
-                showToast(`成功轉換 ${convertedUrls.length} 個連結！`, true);
-            } catch (err) {
-                showToast('轉換失敗，請確認網址格式是否正確', false);
-            } finally {
-                convertBtn.disabled = false;
-                convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 批量轉換為推廣優惠連結`;
+                    showToast(`成功轉換 ${convertedUrls.length} 個連結！`, true);
+                } catch (err) {
+                    showToast('轉換失敗，請確認網址格式是否正確', false);
+                } finally {
+                    convertBtn.disabled = false;
+                    convertBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> 批量轉換為推廣優惠連結`;
+                }
             }
-        }
 
         // 一鍵複製所有轉碼網址
         function copyAllRawUrls() {
