@@ -321,111 +321,113 @@
         <p class="mt-1 text-slate-400">本工具僅提供網址轉換服務，請符合蝦皮推廣相關規範</p>
     </footer>
 
-    <!-- Firebase 官方實時雲端資料庫 SDK 模組 -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- Firebase 雲端資料庫 API 介面與自動同步機制 -->
+    <script>
+        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'flowermom-app';
+        let firebaseConfigObj = null;
 
-        // 取得 App ID 與 Config（具備全環境備援）
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'flowermom-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : { apiKey: "demo-api-key", authDomain: `${appId}.firebaseapp.com`, projectId: appId };
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                firebaseConfigObj = JSON.parse(__firebase_config);
+            }
+        } catch (e) {
+            console.warn('Config Error:', e);
+        }
 
-        let db = null;
-        let auth = null;
+        const PROJECT_ID = (firebaseConfigObj && firebaseConfigObj.projectId) ? firebaseConfigObj.projectId : 'flowermom-default';
 
         function getTodayStr() {
             const d = new Date();
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
 
-        async function initFirebaseStats() {
+        // 使用標準 REST API 存取與更新雲端資料庫（解決 SDK 驗證與卡 0 的問題）
+        async function fetchCloudStats() {
+            const today = getTodayStr();
+            const docUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/artifacts/${APP_ID}/public/data/daily_stats/${today}`;
+
             try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
+                const res = await fetch(docUrl);
+                if (res.ok) {
+                    const data = await res.json();
+                    const views = data.fields?.views?.integerValue || data.fields?.views?.doubleValue || 0;
+                    const conversions = data.fields?.conversions?.integerValue || data.fields?.conversions?.doubleValue || 0;
 
-                // 進行身分驗證（支援 Custom Token 與 匿名認證備援）
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
-                } else {
-                    await signInAnonymously(auth);
+                    document.getElementById('daily-views').innerText = parseInt(views).toLocaleString();
+                    document.getElementById('daily-conversions').innerText = parseInt(conversions).toLocaleString();
+                    return { views: parseInt(views), conversions: parseInt(conversions) };
                 }
-
-                onAuthStateChanged(auth, (user) => {
-                    if (!user) return;
-
-                    const today = getTodayStr();
-                    // 使用標準與安全的路徑規範: /artifacts/{appId}/public/data/daily_stats/{today}
-                    const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_stats', today);
-
-                    // 檢查本機今天是否已計入瀏覽數
-                    const visitedKey = `fm_visited_${today}`;
-                    const isNewDeviceVisit = !localStorage.getItem(visitedKey);
-
-                    if (isNewDeviceVisit) {
-                        localStorage.setItem(visitedKey, 'true');
-                        setDoc(statsDocRef, {
-                            views: increment(1),
-                            conversions: increment(0)
-                        }, { merge: true }).catch(err => console.warn('寫入瀏覽數:', err));
-                    }
-
-                    // 監聽雲端數據即時更新（全站同步）
-                    onSnapshot(statsDocRef, (snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.data();
-                            document.getElementById('daily-views').innerText = (data.views || 1).toLocaleString();
-                            document.getElementById('daily-conversions').innerText = (data.conversions || 0).toLocaleString();
-                        } else {
-                            document.getElementById('daily-views').innerText = "1";
-                            document.getElementById('daily-conversions').innerText = "0";
-                        }
-                    }, (err) => {
-                        console.warn('Snapshot error:', err);
-                        fallbackToUI();
-                    });
-                });
-            } catch (err) {
-                console.warn('Firebase 初始化異常:', err);
-                fallbackToUI();
+            } catch (e) {
+                console.warn('雲端讀取異常:', e);
             }
+            return null;
         }
 
-        function fallbackToUI() {
+        async function initCloudStats() {
             const today = getTodayStr();
             const visitedKey = `fm_visited_${today}`;
-            if (!localStorage.getItem(visitedKey)) {
-                localStorage.setItem(visitedKey, 'true');
+            const isNewVisit = !localStorage.getItem(visitedKey);
+
+            // 先讀取雲端現有數據
+            let currentStats = await fetchCloudStats();
+
+            if (!currentStats) {
+                currentStats = { views: 0, conversions: 0 };
             }
-            document.getElementById('daily-views').innerText = "1";
-            document.getElementById('daily-conversions').innerText = "0";
+
+            // 如果是新裝置存取，向雲端 +1
+            if (isNewVisit) {
+                localStorage.setItem(visitedKey, 'true');
+                currentStats.views += 1;
+                document.getElementById('daily-views').innerText = currentStats.views.toLocaleString();
+                updateCloudData(currentStats.views, currentStats.conversions);
+            } else {
+                if (currentStats.views === 0) {
+                    document.getElementById('daily-views').innerText = "1";
+                }
+            }
         }
 
-        // 全域轉換次數更新接口
-        window.incrementCloudConversion = async function(count = 1) {
-            const convEl = document.getElementById('daily-conversions');
-            if (convEl) {
-                const currentVal = parseInt(convEl.innerText.replace(/,/g, '')) || 0;
-                convEl.innerText = (currentVal + count).toLocaleString();
-            }
+        async function updateCloudData(views, conversions) {
+            const today = getTodayStr();
+            const patchUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/artifacts/${APP_ID}/public/data/daily_stats/${today}`;
 
-            if (!db || !auth || !auth.currentUser) return;
+            const payload = {
+                fields: {
+                    views: { integerValue: views },
+                    conversions: { integerValue: conversions }
+                }
+            };
 
             try {
-                const today = getTodayStr();
-                const statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'daily_stats', today);
-                await setDoc(statsDocRef, {
-                    conversions: increment(count)
-                }, { merge: true });
+                await fetch(patchUrl, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
             } catch (e) {
                 console.warn('雲端更新失敗:', e);
             }
+        }
+
+        // 全域轉換次數累加介面
+        window.incrementCloudConversion = async function(count = 1) {
+            const convEl = document.getElementById('daily-conversions');
+            const viewEl = document.getElementById('daily-views');
+            
+            let currentConv = parseInt(convEl.innerText.replace(/,/g, '')) || 0;
+            let currentViews = parseInt(viewEl.innerText.replace(/,/g, '')) || 1;
+
+            currentConv += count;
+            convEl.innerText = currentConv.toLocaleString();
+
+            // 寫回雲端
+            updateCloudData(currentViews, currentConv);
         };
 
-        window.addEventListener('DOMContentLoaded', initFirebaseStats);
+        window.addEventListener('DOMContentLoaded', initCloudStats);
+        // 每 10 秒自動輪詢雲端，實時同步所有裝置數據
+        setInterval(fetchCloudStats, 10000);
     </script>
 
     <!-- JavaScript 轉碼與互動邏輯 -->
