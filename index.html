@@ -305,14 +305,14 @@
                     <span class="text-[10px] text-slate-500 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-users text-blue-500"></i> 今日瀏覽人數
                     </span>
-                    <span id="daily-views" class="text-base font-black text-slate-900 font-mono mt-0.5">0</span>
+                    <span id="daily-views" class="text-base font-black text-slate-900 font-mono mt-0.5"><i class="fa-solid fa-spinner fa-spin text-slate-400"></i></span>
                 </div>
                 <div class="h-7 w-[1px] bg-slate-200"></div>
                 <div class="flex flex-col items-center">
                     <span class="text-[10px] text-slate-500 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-shopee-500"></i> 今日轉換次數
                     </span>
-                    <span id="daily-conversions" class="text-base font-black text-slate-900 font-mono mt-0.5">0</span>
+                    <span id="daily-conversions" class="text-base font-black text-slate-900 font-mono mt-0.5"><i class="fa-solid fa-spinner fa-spin text-slate-400"></i></span>
                 </div>
             </div>
         </div>
@@ -321,135 +321,70 @@
         <p class="mt-1 text-slate-400">本工具僅提供網址轉換服務，請符合蝦皮推廣相關規範</p>
     </footer>
 
-    <!-- Firebase 雲端資料庫 SDK 引入 -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, increment, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // 全域變數獲取與預設 APP ID
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'flowermom-converter-app-v1';
-        let db = null;
-        let auth = null;
-        let currentUser = null;
-
-        // 當日日期 key (YYYY-MM-DD)
-        function getTodayKey() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+    <!-- 免費公用雲端 API 資料庫計數腳本 -->
+    <script>
+        const API_NAMESPACE = 'flowermom_shopee_converter_2026';
+        
+        // 取得當日 key (例如: 2026-11-01)
+        function getTodayDateStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
 
-        // 取得雲端文件引用路徑 (符合 Firebase 安全規範)
-        function getStatsDocRef(today) {
-            return doc(collection(db, 'artifacts', appId, 'public', 'data', 'daily_stats'), today);
-        }
-
-        // 初始化 Firebase Auth 與 Firestore 監聽器
-        async function initCloudStats() {
-            try {
-                // 自動解析 Firebase Config (包含相容處理)
-                let firebaseConfig = null;
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
-                }
-
-                // 若無傳入 config 則嘗試嘗試初始化已有或相容 App
-                if (!firebaseConfig) {
-                    console.warn("未檢測到 Firebase Config 參數，系統切換為自動重試與相容載入");
-                    return;
-                }
-
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // 優先使用 Token 或匿名登入
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    try {
-                        const userCred = await signInWithCustomToken(auth, __initial_auth_token);
-                        currentUser = userCred.user;
-                    } catch (e) {
-                        const userCred = await signInAnonymously(auth);
-                        currentUser = userCred.user;
-                    }
-                } else {
-                    const userCred = await signInAnonymously(auth);
-                    currentUser = userCred.user;
-                }
-
-                if (!currentUser || !db) return;
-
-                const today = getTodayKey();
-                const statsDocRef = getStatsDocRef(today);
-
-                // 即時監聽雲端數據變化 (全裝置即時同步顯示)
-                onSnapshot(statsDocRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const views = data.views || 0;
-                        const conversions = data.conversions || 0;
-                        document.getElementById('daily-views').innerText = views.toLocaleString();
-                        document.getElementById('daily-conversions').innerText = conversions.toLocaleString();
-                    } else {
-                        // 當日尚無文件時建立初始文件
-                        setDoc(statsDocRef, { views: 1, conversions: 0, date: today }, { merge: true });
-                        document.getElementById('daily-views').innerText = "1";
-                        document.getElementById('daily-conversions').innerText = "0";
-                    }
-                }, (err) => {
-                    console.warn("雲端數據監聽警示:", err);
-                });
-
-                // 紀錄當日瀏覽次數 (同一裝置當天僅累加一次)
-                recordCloudView(today);
-            } catch (err) {
-                console.error("Firebase 雲端初始化失敗:", err);
-            }
-        }
-
-        // 紀錄雲端瀏覽次數 (同一裝置當天只累加一次)
-        async function recordCloudView(today) {
-            const visitedKey = `fm_cloud_visited_${today}`;
-            if (localStorage.getItem(visitedKey)) return;
-
-            try {
-                const statsDocRef = getStatsDocRef(today);
-                // 標記當天已造訪
-                localStorage.setItem(visitedKey, 'true');
-                // 雲端 views + 1
-                await setDoc(statsDocRef, { views: increment(1), date: today }, { merge: true });
-            } catch (err) {
-                console.error("雲端瀏覽次數更新失敗:", err);
-            }
-        }
-
-        // 暴露全域函數供轉換時呼叫
-        window.incrementCloudConversion = async function(count = 1) {
-            const today = getTodayKey();
+        // 初始化公用雲端計數
+        async function initGlobalCloudStats() {
+            const today = getTodayDateStr();
+            const viewKey = `views_${today}`;
+            const convKey = `convs_${today}`;
             
-            // 畫面即時先加算
+            const visitedKey = `fm_visited_${today}`;
+            const shouldRecordView = !localStorage.getItem(visitedKey);
+
+            try {
+                // 如果是今天第一次開網頁的裝置，自動給雲端瀏覽數 +1
+                if (shouldRecordView) {
+                    localStorage.setItem(visitedKey, 'true');
+                    fetch(`https://api.countapi.xyz/hit/${API_NAMESPACE}/${viewKey}`).catch(() => {});
+                }
+
+                // 抓取雲端瀏覽數與轉換數
+                const [vRes, cRes] = await Promise.all([
+                    fetch(`https://api.countapi.xyz/get/${API_NAMESPACE}/${viewKey}`).then(r => r.json()).catch(() => ({ value: shouldRecordView ? 1 : 0 })),
+                    fetch(`https://api.countapi.xyz/get/${API_NAMESPACE}/${convKey}`).then(r => r.json()).catch(() => ({ value: 0 }))
+                ]);
+
+                document.getElementById('daily-views').innerText = (vRes.value || (shouldRecordView ? 1 : 0)).toLocaleString();
+                document.getElementById('daily-conversions').innerText = (cRes.value || 0).toLocaleString();
+            } catch (e) {
+                // 若網路擋 API，預設呈現 1 人與 0 次
+                document.getElementById('daily-views').innerText = "1";
+                document.getElementById('daily-conversions').innerText = "0";
+            }
+        }
+
+        // 全域轉換次數累加器
+        window.incrementCloudConversion = async function(count = 1) {
+            const today = getTodayDateStr();
+            const convKey = `convs_${today}`;
+
+            // 前端 UI 先即時加上去
             const convEl = document.getElementById('daily-conversions');
             if (convEl) {
                 const currentVal = parseInt(convEl.innerText.replace(/,/g, '')) || 0;
                 convEl.innerText = (currentVal + count).toLocaleString();
             }
 
-            if (!db || !currentUser) return;
             try {
-                const statsDocRef = getStatsDocRef(today);
-                await setDoc(statsDocRef, { conversions: increment(count), date: today }, { merge: true });
-            } catch (err) {
-                console.error("雲端轉換次數更新失敗:", err);
+                // 傳送到免費雲端 API 保存
+                for (let i = 0; i < count; i++) {
+                    await fetch(`https://api.countapi.xyz/hit/${API_NAMESPACE}/${convKey}`);
+                }
+            } catch (e) {
+                console.warn('雲端轉換次數更新異常:', e);
             }
         };
 
-        // DOM 載入後啟動雲端同步
-        window.addEventListener('DOMContentLoaded', () => {
-            initCloudStats();
-        });
+        window.addEventListener('DOMContentLoaded', initGlobalCloudStats);
     </script>
 
     <!-- JavaScript 轉碼與互動邏輯 -->
