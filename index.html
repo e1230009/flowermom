@@ -115,7 +115,7 @@
                     </p>
                 </div>
                 
-                <a href="https://coupa.ng/cqwwLu" target="_blank" rel="noopener noreferrer" 
+                <a href="https://coupa.ng/cm76X4" target="_blank" rel="noopener noreferrer" 
                    class="w-full sm:w-auto shrink-0 px-7 py-3.5 bg-white hover:bg-blue-50 active:scale-95 text-blue-700 font-black text-base sm:text-lg rounded-2xl shadow-xl hover:shadow-blue-400/40 transition-all duration-200 flex items-center justify-center gap-2 border-2 border-blue-100 tracking-wide">
                     <i class="fa-solid fa-bag-shopping text-blue-600 text-lg sm:text-xl"></i> 來去逛逛
                 </a>
@@ -194,13 +194,13 @@
 
             <div class="space-y-3">
                 <!-- 折扣碼項目 1 -->
-               <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+               <!--<div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
-                            <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-1">VIP1111</span>
+                            <span class="font-mono font-bold text-slate-900 text-base tracking-wider" id="code-1">空白</span>
                         </div>
-                        <p class="text-xs text-slate-500">低消$112-$111,11/1 VIP日搶用</p>
+                        <p class="text-xs text-slate-500">無</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
                         <button onclick="copyCodeFromElement('code-1')" class="flex-1 sm:flex-none px-4 py-2 bg-amber-400 hover:bg-yellow-300 active:scale-95 text-red-950 font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
@@ -209,7 +209,7 @@
                         <a href="https://s.shopee.tw/30p8ShXbaD" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-4 py-2 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-ticket"></i> 這裡輸入領券
                         </a>
-                    </div>
+                    --></div>
                 </div>
 
                 <!-- 折扣碼項目 2 (新增空白) -->
@@ -251,7 +251,7 @@
                 </div>
 
                 <!-- 折扣碼項目 4 (新增空白) -->
-               <!-- <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
+                 <!-- <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-amber-300 transition">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-black bg-rose-500 text-white px-2 py-0.5 rounded-md">專屬折價券</span>
@@ -266,8 +266,8 @@
                         <a href="https://s.shopee.tw/30p8ShXbaD" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-4 py-2 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-ticket"></i> 這裡輸入領券
                         </a>
-                    </div>
-                --></div>
+                    --></div>
+                </div>
             </div>
         </section>
 
@@ -298,6 +298,25 @@
     </main>
 
     <footer class="bg-white/80 backdrop-blur-md border-t border-slate-200 py-6 text-center text-xs text-slate-500 relative z-10">
+        <!-- 每日數據統計儀表板 -->
+        <div class="max-w-md mx-auto mb-4 px-4">
+            <div class="bg-slate-100/90 border border-slate-200/80 rounded-2xl p-3 shadow-inner flex items-center justify-around gap-2 text-slate-700">
+                <div class="flex flex-col items-center">
+                    <span class="text-[10px] text-slate-500 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-users text-blue-500"></i> 今日瀏覽人數
+                    </span>
+                    <span id="daily-views" class="text-base font-black text-slate-900 font-mono mt-0.5">0</span>
+                </div>
+                <div class="h-7 w-[1px] bg-slate-200"></div>
+                <div class="flex flex-col items-center">
+                    <span class="text-[10px] text-slate-500 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-shopee-500"></i> 今日轉換次數
+                    </span>
+                    <span id="daily-conversions" class="text-base font-black text-slate-900 font-mono mt-0.5">0</span>
+                </div>
+            </div>
+        </div>
+
         <p>© 2026 flowermom - 蝦皮分潤推廣網址工具</p>
         <p class="mt-1 text-slate-400">本工具僅提供網址轉換服務，請符合蝦皮推廣相關規範</p>
     </footer>
@@ -307,6 +326,56 @@
         let convertedUrls = [];
         const DEFAULT_TEXT = '直接點擊購買商品';
         const AFFILIATE_ID = '16397180008';
+
+        // 每日統計計數邏輯 (自動跨日歸零)
+        function initDailyStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const savedDate = localStorage.getItem('fm_stats_date');
+
+            if (savedDate !== today) {
+                // 若為新的一天，重置計數器
+                localStorage.setItem('fm_stats_date', today);
+                localStorage.setItem('fm_daily_views', '1');
+                localStorage.setItem('fm_daily_conversions', '0');
+            } else {
+                // 當天累積瀏覽人數 +1
+                let views = parseInt(localStorage.getItem('fm_daily_views') || '0', 10) + 1;
+                localStorage.setItem('fm_daily_views', views.toString());
+            }
+
+            updateStatsDisplay();
+        }
+
+        // 更新頁面上的統計數字顯示
+        function updateStatsDisplay() {
+            const views = localStorage.getItem('fm_daily_views') || '0';
+            const conversions = localStorage.getItem('fm_daily_conversions') || '0';
+            
+            document.getElementById('daily-views').innerText = parseInt(views, 10).toLocaleString();
+            document.getElementById('daily-conversions').innerText = parseInt(conversions, 10).toLocaleString();
+        }
+
+        // 增加轉換計數
+        function incrementConversionCount(count = 1) {
+            const today = new Date().toISOString().split('T')[0];
+            const savedDate = localStorage.getItem('fm_stats_date');
+
+            if (savedDate !== today) {
+                localStorage.setItem('fm_stats_date', today);
+                localStorage.setItem('fm_daily_views', '1');
+                localStorage.setItem('fm_daily_conversions', count.toString());
+            } else {
+                let conversions = parseInt(localStorage.getItem('fm_daily_conversions') || '0', 10) + count;
+                localStorage.setItem('fm_daily_conversions', conversions.toString());
+            }
+
+            updateStatsDisplay();
+        }
+
+        // 頁面載入完成後初始化統計
+        window.addEventListener('DOMContentLoaded', () => {
+            initDailyStats();
+        });
 
         // 浮動 Toast 訊息提示機制
         let toastTimeout;
@@ -362,11 +431,11 @@
             copyToClipboard(code, `已複製折扣碼：${code}`);
         }
 
-        // 動態生成帶有 flowermom+亂數 的專屬 Sub ID
+        // 動態生成帶有 flowermom_web+亂數 的專屬 Sub ID
         function generateRandomSubId() {
             const timestamp = Math.floor(Date.now() / 1000);
             const randomHex = Math.random().toString(36).substring(2, 6);
-            return `flowermom_${timestamp}_${randomHex}`;
+            return `flowermom_web_${timestamp}_${randomHex}`;
         }
 
         // 清空輸入
@@ -514,6 +583,10 @@
 
                 document.getElementById('success-count').innerText = `成功轉換 ${convertedUrls.length} 個連結！`;
                 document.getElementById('result-box').classList.remove('hidden');
+                
+                // 累積當天轉換次數
+                incrementConversionCount(convertedUrls.length);
+
                 showToast(`成功轉換 ${convertedUrls.length} 個連結！`, true);
             } catch (err) {
                 showToast('轉換失敗，請確認網址格式是否正確', false);
@@ -544,4 +617,3 @@
     </script>
 </body>
 </html>
-```
