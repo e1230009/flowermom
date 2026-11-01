@@ -327,15 +327,19 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, increment, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 全域變數獲取與 Firebase 初始化
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'flowermom-converter-app';
+        // 全域變數獲取與預設 APP ID
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'flowermom-converter-app-v1';
         let db = null;
         let auth = null;
         let currentUser = null;
 
         // 當日日期 key (YYYY-MM-DD)
         function getTodayKey() {
-            return new Date().toISOString().split('T')[0];
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         // 取得雲端文件引用路徑 (符合 Firebase 安全規範)
@@ -346,45 +350,61 @@
         // 初始化 Firebase Auth 與 Firestore 監聽器
         async function initCloudStats() {
             try {
-                if (typeof __firebase_config !== 'undefined') {
-                    const firebaseConfig = JSON.parse(__firebase_config);
-                    const app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
+                // 自動解析 Firebase Config (包含相容處理)
+                let firebaseConfig = null;
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+                }
 
-                    // 優先使用 Token 或匿名登入
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                // 若無傳入 config 則嘗試嘗試初始化已有或相容 App
+                if (!firebaseConfig) {
+                    console.warn("未檢測到 Firebase Config 參數，系統切換為自動重試與相容載入");
+                    return;
+                }
+
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // 優先使用 Token 或匿名登入
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
                         const userCred = await signInWithCustomToken(auth, __initial_auth_token);
                         currentUser = userCred.user;
-                    } else {
+                    } catch (e) {
                         const userCred = await signInAnonymously(auth);
                         currentUser = userCred.user;
                     }
-
-                    if (!currentUser || !db) return;
-
-                    const today = getTodayKey();
-                    const statsDocRef = getStatsDocRef(today);
-
-                    // 即時監聽雲端數據變化 (全裝置即時同步顯示)
-                    onSnapshot(statsDocRef, (docSnap) => {
-                        if (docSnap.exists()) {
-                            const data = docSnap.data();
-                            const views = data.views || 0;
-                            const conversions = data.conversions || 0;
-                            document.getElementById('daily-views').innerText = views.toLocaleString();
-                            document.getElementById('daily-conversions').innerText = conversions.toLocaleString();
-                        } else {
-                            // 當日尚無文件時建立初始文件
-                            setDoc(statsDocRef, { views: 0, conversions: 0, date: today }, { merge: true });
-                        }
-                    }, (err) => {
-                        console.warn("雲端數據監聽異常:", err);
-                    });
-
-                    // 紀錄當日瀏覽次數 (同一裝置當天僅累加一次)
-                    recordCloudView(today);
+                } else {
+                    const userCred = await signInAnonymously(auth);
+                    currentUser = userCred.user;
                 }
+
+                if (!currentUser || !db) return;
+
+                const today = getTodayKey();
+                const statsDocRef = getStatsDocRef(today);
+
+                // 即時監聽雲端數據變化 (全裝置即時同步顯示)
+                onSnapshot(statsDocRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const views = data.views || 0;
+                        const conversions = data.conversions || 0;
+                        document.getElementById('daily-views').innerText = views.toLocaleString();
+                        document.getElementById('daily-conversions').innerText = conversions.toLocaleString();
+                    } else {
+                        // 當日尚無文件時建立初始文件
+                        setDoc(statsDocRef, { views: 1, conversions: 0, date: today }, { merge: true });
+                        document.getElementById('daily-views').innerText = "1";
+                        document.getElementById('daily-conversions').innerText = "0";
+                    }
+                }, (err) => {
+                    console.warn("雲端數據監聽警示:", err);
+                });
+
+                // 紀錄當日瀏覽次數 (同一裝置當天僅累加一次)
+                recordCloudView(today);
             } catch (err) {
                 console.error("Firebase 雲端初始化失敗:", err);
             }
@@ -408,9 +428,17 @@
 
         // 暴露全域函數供轉換時呼叫
         window.incrementCloudConversion = async function(count = 1) {
+            const today = getTodayKey();
+            
+            // 畫面即時先加算
+            const convEl = document.getElementById('daily-conversions');
+            if (convEl) {
+                const currentVal = parseInt(convEl.innerText.replace(/,/g, '')) || 0;
+                convEl.innerText = (currentVal + count).toLocaleString();
+            }
+
             if (!db || !currentUser) return;
             try {
-                const today = getTodayKey();
                 const statsDocRef = getStatsDocRef(today);
                 await setDoc(statsDocRef, { conversions: increment(count), date: today }, { merge: true });
             } catch (err) {
