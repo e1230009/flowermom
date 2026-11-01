@@ -327,20 +327,31 @@
         const DEFAULT_TEXT = '直接點擊購買商品';
         const AFFILIATE_ID = '16397180008';
 
-        // 每日統計計數邏輯 (自動跨日歸零)
+        // 每日統計計數邏輯 (同裝置/IP一天只計算一次瀏覽人數)
         function initDailyStats() {
             const today = new Date().toISOString().split('T')[0];
             const savedDate = localStorage.getItem('fm_stats_date');
+            const lastVisitedDate = localStorage.getItem('fm_last_visited_date');
 
             if (savedDate !== today) {
-                // 若為新的一天，重置計數器
+                // 若為新的一天，重置日期標記
                 localStorage.setItem('fm_stats_date', today);
-                localStorage.setItem('fm_daily_views', '1');
+                
+                // 新的一天，檢查該裝置今天是否已瀏覽過
+                if (lastVisitedDate !== today) {
+                    localStorage.setItem('fm_daily_views', '1');
+                    localStorage.setItem('fm_last_visited_date', today);
+                } else {
+                    localStorage.setItem('fm_daily_views', '0');
+                }
                 localStorage.setItem('fm_daily_conversions', '0');
             } else {
-                // 當天累積瀏覽人數 +1
-                let views = parseInt(localStorage.getItem('fm_daily_views') || '0', 10) + 1;
-                localStorage.setItem('fm_daily_views', views.toString());
+                // 當日重複造訪檢查：如果今天尚未記錄過此裝置，瀏覽人數才 +1
+                if (lastVisitedDate !== today) {
+                    let views = parseInt(localStorage.getItem('fm_daily_views') || '0', 10) + 1;
+                    localStorage.setItem('fm_daily_views', views.toString());
+                    localStorage.setItem('fm_last_visited_date', today);
+                }
             }
 
             updateStatsDisplay();
