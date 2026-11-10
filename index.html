@@ -525,7 +525,19 @@
                 copyToClipboard(code, `已複製折扣碼：${code}`);
             }
         }
-
+        
+        // 一鍵複製折扣碼並開啟領券頁面
+        function copyAndOpenLink(elementId, targetUrl) {
+            const codeEl = document.getElementById(elementId);
+            if (codeEl) {
+                const code = codeEl.innerText.trim();
+                copyToClipboard(code, `已複製折扣碼【${code}】，正在前往領券頁面...`);
+                // 延遲開啟連結以確保複製完成
+                setTimeout(() => {
+                    window.open(targetUrl, '_blank');
+                }, 300);
+            }
+        }
         // 複製折扣碼（保留相容性）
         function copyCode(code) {
             copyToClipboard(code, `已複製折扣碼：${code}`);
